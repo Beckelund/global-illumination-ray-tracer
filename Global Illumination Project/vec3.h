@@ -35,10 +35,9 @@ struct Vec3 {
         return sqrt(lengthSquared());
     }   
 
-    vec3 normaliz(){
+    Vec3 normalize(){
         double l = this->length();
-        reurn this* (1 / l);
-
+        return this->operator*(1 / l);
     } 
 };
 #endif

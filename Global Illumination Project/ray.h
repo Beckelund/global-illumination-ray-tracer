@@ -18,5 +18,5 @@ private:
 	Ray* next;
 	Ray* prev;
 
-	ColorDBL color;
+	//ColorDBL color;
 };
