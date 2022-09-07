@@ -2,6 +2,11 @@
 #include "vec3.h"
 #include "colordbl.h"
 
+/*TODO*/
+/*
+	
+*/
+
 class Ray
 {
 	//Default
