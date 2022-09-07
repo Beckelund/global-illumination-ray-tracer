@@ -127,7 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="colordbl.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ray.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="colordbl.h" />
+    <ClInclude Include="ray.h" />
+    <ClInclude Include="vec3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
