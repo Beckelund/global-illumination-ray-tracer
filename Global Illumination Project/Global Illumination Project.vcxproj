@@ -130,11 +130,15 @@
     <ClCompile Include="colordbl.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="polygon.cpp" />
     <ClCompile Include="ray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="colordbl.h" />
     <ClInclude Include="image.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="polygon.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
