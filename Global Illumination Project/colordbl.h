@@ -4,7 +4,14 @@
 #define COLORDBL_H
 class ColorDBL
 {
-	ColorDBL() { r = 0; g = 0; b = 0; };
+public:
+	ColorDBL();
+	ColorDBL(double r, double g, double b);
+
+	double getR() const;
+	double getG() const;
+	double getB() const;
+
 
 private:
 	double r;

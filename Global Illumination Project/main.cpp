@@ -1,11 +1,15 @@
 #include <iostream>
 #include "vec3.h"
+#include "image.h"
 
 int main()
 {
-	int ImageHeight = 600; 
+	//Create image 
 	int ImageWidth = 600;
+	int ImageHeight = 600; 
 	
+	Image im(ImageWidth, ImageHeight);
+
 	//Create rays from camera
 	Vec3 eye = Vec3(-1, 0, 0);
 
@@ -28,11 +32,13 @@ int main()
 			Vec3 pixelPos = Vec3(c1.x, y, z);
 
 			Vec3 direction = (pixelPos-eye).normalize();
+			im.SetPixelColor(ColorDBL(0, direction.y, direction.z), i, j);
 		}
 	}
 
+	im.ExportBPM("Images/testImage3.bmp");
 
-	std::cout << "Hello version 2 world " << std::endl;
+	std::cout << "Success! " << std::endl;
 
 	return 0;
 }
