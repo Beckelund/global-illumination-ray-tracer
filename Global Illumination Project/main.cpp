@@ -29,7 +29,7 @@ int main()
 	//Create Triangle object
 	ColorDBL triCol(1, 1, 1);
 	std::vector<Polygon::Vertex> tr; 
-	tr.push_back(Polygon::Vertex(Vec3(1, -0.5, -0.5), triCol));
+	tr.push_back(Polygon::Vertex(Vec3(3, -0.5, -0.5), triCol));
 	tr.push_back(Polygon::Vertex(Vec3(3, 1.5, -0.5), triCol));
 	tr.push_back(Polygon::Vertex(Vec3(3, -0.5, 1.5), triCol));
 	std::vector<int> trInd = { 0,1,2,0};
@@ -44,7 +44,7 @@ int main()
 			Vec3 pixelPos = Vec3(c1.x, y, z);
 			Vec3 direction = (pixelPos-eye).normalize();
 			Ray r(eye, direction);
-			int t = triangle.Intersection(r);
+			double t = triangle.Intersection(r);
 
 			im.SetPixelColor(ColorDBL(t, t, t), i, j);
 			//im.SetPixelColor(ColorDBL(0, direction.y, direction.z), i, j);
