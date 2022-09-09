@@ -15,7 +15,7 @@ public:
 
 	Polygon(std::vector<Vertex> vertices);
 
-	double Intersection(Ray r);
+	void Intersection(Ray& r);
 
 
 private:

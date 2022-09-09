@@ -6,12 +6,11 @@ Polygon::Polygon(std::vector<Vertex> vertices): vertices(vertices) {
 	normal = (v2 % v1).normalize();
 }
 
-//returns -1 if the Ray does not intersect
-double Polygon::Intersection(Ray r) {
+void Polygon::Intersection(Ray& r) {
 	// plane intersection 
 	double demominator = normal * r.getDirection();
 	if (demominator >= 0)
-		return -1.0;
+		return;
 	double t = ((vertices[0].pos - r.getOrigin()) * normal) / demominator;
 	Vec3 hitPoint = r.getPoint(t);
 
@@ -28,7 +27,11 @@ double Polygon::Intersection(Ray r) {
 	double u = PE1inv * (P * T);
 	double v = PE1inv * (Q * D);
 
-	if (u >= 0 && v >= 0 && u + v <= 1)
-		return t;
-	return -1.0;
+	if (u >= 0 && v >= 0 && u + v <= 1) {
+		double v0 = (1 - u - v);
+		double v1 = u;
+		double v2 = v;
+		ColorDBL color = vertices[0].col * v0 + vertices[1].col * v1 + vertices[2].col * v2;
+		r.setHit(t, color);
+	}
 }

@@ -12,6 +12,9 @@ public:
 	double getG() const;
 	double getB() const;
 
+	ColorDBL operator+(ColorDBL const a);
+	ColorDBL operator*(ColorDBL const a);
+	ColorDBL operator*(double const d);
 
 private:
 	double r;

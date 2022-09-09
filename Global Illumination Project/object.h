@@ -6,7 +6,7 @@ public:
 	Object();
 	Object(const char* filePath);
 	Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind);
-	double Intersection(Ray r);
+	void Intersection(Ray& r);
 
 private:
 	std::vector<Polygon> polygons;

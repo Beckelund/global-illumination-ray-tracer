@@ -24,12 +24,8 @@ Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind) : vertic
 	}
 }
 
-double Object::Intersection(Ray r) {
-	double t = -1;
-	double tempt = -1;
+void Object::Intersection(Ray& r) {
 	for (auto& poly : polygons) {
-		tempt = poly.Intersection(r);
-		t = (tempt > 0 && (tempt < t||t < 0)) ? tempt : t;
+		poly.Intersection(r);
 	}
-	return t;
 }

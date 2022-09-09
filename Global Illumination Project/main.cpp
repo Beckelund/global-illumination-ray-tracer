@@ -27,11 +27,13 @@ int main()
 
 
 	//Create Triangle object
-	ColorDBL triCol(1, 1, 1);
+	ColorDBL triCol1(1, 0, 0);
+	ColorDBL triCol2(0, 1, 0);
+	ColorDBL triCol3(0, 0, 1);
 	std::vector<Polygon::Vertex> tr; 
-	tr.push_back(Polygon::Vertex(Vec3(3, -0.5, -0.5), triCol));
-	tr.push_back(Polygon::Vertex(Vec3(3, 1.5, -0.5), triCol));
-	tr.push_back(Polygon::Vertex(Vec3(3, -0.5, 1.5), triCol));
+	tr.push_back(Polygon::Vertex(Vec3(3, -0.5, -0.5), triCol1));
+	tr.push_back(Polygon::Vertex(Vec3(3, 1.5, -0.5), triCol2));
+	tr.push_back(Polygon::Vertex(Vec3(3, -0.5, 1.5), triCol3));
 	std::vector<int> trInd = { 0,1,2,0};
 	Object triangle(tr, trInd);
 
@@ -44,14 +46,13 @@ int main()
 			Vec3 pixelPos = Vec3(c1.x, y, z);
 			Vec3 direction = (pixelPos-eye).normalize();
 			Ray r(eye, direction);
-			double t = triangle.Intersection(r);
-
-			im.SetPixelColor(ColorDBL(t, t, t), i, j);
+			triangle.Intersection(r);
+			im.SetPixelColor(r.getColor(), i, j);
 			//im.SetPixelColor(ColorDBL(0, direction.y, direction.z), i, j);
 		}
 	}
 
-	im.ExportBPM("Images/triangleTest2.bmp");
+	im.ExportBPM("Images/triangleTest5.bmp");
 
 	std::cout << "Success! " << std::endl;
 
