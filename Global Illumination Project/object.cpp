@@ -5,6 +5,11 @@ Object::Object(){}
  
 Object::Object(const char* filePath){
 //TODO implemetn creating object from a .obj file 
+	std::ifstream file;
+	file.open(filePath,std::ifstream::in);
+	if (!file.is_open())
+		std::cout << " The object file was not found \n";
+
 }
 
 Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind) : vertices(vert), indices(ind) {

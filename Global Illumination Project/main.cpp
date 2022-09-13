@@ -27,15 +27,19 @@ int main()
 
 
 	//Create Triangle object
-	ColorDBL triCol1(1, 0, 0);
-	ColorDBL triCol2(0, 1, 0);
-	ColorDBL triCol3(0, 0, 1);
-	std::vector<Polygon::Vertex> tr; 
-	tr.push_back(Polygon::Vertex(Vec3(3, -0.5, -0.5), triCol1));
-	tr.push_back(Polygon::Vertex(Vec3(3, 1.5, -0.5), triCol2));
-	tr.push_back(Polygon::Vertex(Vec3(3, -0.5, 1.5), triCol3));
-	std::vector<int> trInd = { 0,1,2,0};
-	Object triangle(tr, trInd);
+	ColorDBL polyCol1(1, 0, 0);
+	ColorDBL polyCol2(0, 1, 0);
+	ColorDBL polyCol3(0, 0, 1);
+	ColorDBL polyCol4(1, 0, 1);
+	ColorDBL polyCol5(1, 1, 0);
+	std::vector<Polygon::Vertex> poly;
+	poly.push_back(Polygon::Vertex(Vec3(3, -0.5, -0.5), polyCol1));
+	poly.push_back(Polygon::Vertex(Vec3(3, 1.5, -0.5), polyCol2));
+	poly.push_back(Polygon::Vertex(Vec3(3, 1.2, 1.2), polyCol3));
+	poly.push_back(Polygon::Vertex(Vec3(3, -0.5, 1.5), polyCol4));
+	poly.push_back(Polygon::Vertex(Vec3(3, -1.0, 0.75), polyCol5));
+	std::vector<int> polyInd = { 0,1,2,0,0,2,3,0,0,3,4,0};
+	Object triangle(poly, polyInd);
 
 
 	for (int i = 0; i < ImageWidth; i++) {
@@ -52,7 +56,7 @@ int main()
 		}
 	}
 
-	im.ExportBPM("Images/triangleTest5.bmp");
+	im.ExportBPM("Images/PolygonTest2.bmp");
 
 	std::cout << "Success! " << std::endl;
 
