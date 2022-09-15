@@ -15,7 +15,5 @@ private:
 	void createPolygonsFromList(std::vector<Polygon::Vertex>& vert, std::vector<int>& ind);
 	
 	std::vector<Polygon> polygons;
-	std::vector<Polygon::Vertex> vertices;
-	std::vector<int> indices; 
 };
 
