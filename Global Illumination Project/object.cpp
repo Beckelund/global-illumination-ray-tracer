@@ -12,7 +12,7 @@ Object::Object(const char* filePath){
 
 }
 
-Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind) : vertices(vert), indices(ind) {
+Object::Object(std::vector<Polygon::Vertex> vertices, std::vector<int> indices) {
 	int start  = -1;
 	std::vector<Polygon::Vertex> polygon;
 	for (int i = 0; i < indices.size();i++) {

@@ -12,7 +12,5 @@ public:
 
 private:
 	std::vector<Polygon> polygons;
-	std::vector<Polygon::Vertex> vertices;
-	std::vector<int> indices; 
 };
 
