@@ -25,6 +25,9 @@ int main()
 	double deltaWidth = cPlaneWidth / (double)ImageWidth;
 	double deltaHeight = cPlaneHeight / (double)ImageHeight;
 
+	// Create object from file 
+	Object objectFromFile("Models/test1.obj");
+
 
 	//Create Triangle object
 	ColorDBL polyCol1(1, 0, 0);
@@ -50,13 +53,13 @@ int main()
 			Vec3 pixelPos = Vec3(c1.x, y, z);
 			Vec3 direction = (pixelPos-eye).normalize();
 			Ray r(eye, direction);
-			triangle.Intersection(r);
+			objectFromFile.Intersection(r);
 			im.SetPixelColor(r.getColor(), i, j);
 			//im.SetPixelColor(ColorDBL(0, direction.y, direction.z), i, j);
 		}
 	}
 
-	im.ExportBPM("Images/PolygonTest2.bmp");
+	im.ExportBPM("Images/ImportObjectTest2.bmp");
 
 	std::cout << "Success! " << std::endl;
 
