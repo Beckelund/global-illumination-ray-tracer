@@ -70,6 +70,7 @@ Object::Object(const char* filePath){
 		}
 
 	}
+	std::reverse(ind.begin(),ind.end());
 	createPolygonsFromList(vert, ind);
 }
 

@@ -30,12 +30,12 @@ int main()
 
 
 	//Create Triangle object
+	std::vector<Polygon::Vertex> poly;
 	ColorDBL polyCol1(1, 0, 0);
 	ColorDBL polyCol2(0, 1, 0);
 	ColorDBL polyCol3(0, 0, 1);
 	ColorDBL polyCol4(1, 0, 1);
 	ColorDBL polyCol5(1, 1, 0);
-	std::vector<Polygon::Vertex> poly;
 	poly.push_back(Polygon::Vertex(Vec3(3, -0.5, -0.5), polyCol1));
 	poly.push_back(Polygon::Vertex(Vec3(3, 1.5, -0.5), polyCol2));
 	poly.push_back(Polygon::Vertex(Vec3(3, 1.2, 1.2), polyCol3));
@@ -43,6 +43,33 @@ int main()
 	poly.push_back(Polygon::Vertex(Vec3(3, -1.0, 0.75), polyCol5));
 	std::vector<int> polyInd = { 0,1,2,0,0,2,3,0,0,3,4,0};
 	Object triangle(poly, polyInd);
+
+	// Create room object 
+	std::vector<Polygon::Vertex> roomVert;
+	ColorDBL rcol(0.9, 0.9, 0.9);
+	roomVert.push_back(Polygon::Vertex(Vec3(10, 6, -5), rcol));//0
+	roomVert.push_back(Polygon::Vertex(Vec3(13, 0, -5), rcol));//1
+	roomVert.push_back(Polygon::Vertex(Vec3(13, 0, 5), rcol));//2
+	roomVert.push_back(Polygon::Vertex(Vec3(10, 6, 5), rcol));//3
+	roomVert.push_back(Polygon::Vertex(Vec3(10, -6, -5), rcol));//4
+	roomVert.push_back(Polygon::Vertex(Vec3(10, -6, 5), rcol));//5
+	roomVert.push_back(Polygon::Vertex(Vec3(0, 6, -5), rcol));//6 
+	roomVert.push_back(Polygon::Vertex(Vec3(-3, 0, -5), rcol));//7
+	roomVert.push_back(Polygon::Vertex(Vec3(-3, 0, 5), rcol));//8
+	roomVert.push_back(Polygon::Vertex(Vec3(0, 6, 5), rcol));//9
+	roomVert.push_back(Polygon::Vertex(Vec3(0, -6, -5), rcol));//10
+	roomVert.push_back(Polygon::Vertex(Vec3(0, -6, 5), rcol));//11
+	std::vector<int> roomInd = {
+		0,3,2,1,0
+		,1,2,5,4,1
+		,7,8,9,6,7
+		,10,11,8,7,10
+		,6,9,3,0,6
+		,4,5,11,10,4
+		,2,3,9,8,11,5,2
+		,1,4,10,7,6,0,1
+	};
+	Object Room(roomVert, roomInd);
 
 
 	for (int i = 0; i < ImageWidth; i++) {
@@ -53,13 +80,14 @@ int main()
 			Vec3 pixelPos = Vec3(c1.x, y, z);
 			Vec3 direction = (pixelPos-eye).normalize();
 			Ray r(eye, direction);
-			objectFromFile.Intersection(r);
+			Room.Intersection(r);
+			//objectFromFile.Intersection(r);
 			im.SetPixelColor(r.getColor(), i, j);
 			//im.SetPixelColor(ColorDBL(0, direction.y, direction.z), i, j);
 		}
 	}
 
-	im.ExportBPM("Images/ImportObjectTest2.bmp");
+	im.ExportBPM("Images/RoomTest7.bmp");
 
 	std::cout << "Success! " << std::endl;
 

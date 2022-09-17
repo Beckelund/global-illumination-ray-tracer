@@ -35,6 +35,7 @@ void Polygon::Intersection(Ray& r) {
 			double v1 = u;
 			double v2 = v;
 			ColorDBL color = vertices[0].col * v0 + vertices[i+1].col * v1 + vertices[i+2].col * v2;
+			color = color * ((r.getDirection()*( - 1)) * normal);
 			r.setHit(t, color);
 			return;
 		}
