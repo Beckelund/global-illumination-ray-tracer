@@ -1,6 +1,7 @@
 #pragma once
 #include "colordbl.h"
-//#include "ray.h"
+#include "ray.h"
+
 
 class Material {
 public:
@@ -10,9 +11,10 @@ public:
 	Material(ColorDBL col);
 	Material(Type t, ColorDBL col);
 
-	//Ray* BRDF(Vec3 Normal,Ray& prev);
+	Ray* BRDF(Vec3 Normal,Ray& prev);
 
 	ColorDBL getColor() { return color; }
+	Type getType() { return type; }
 
 private: 
 	Type type;

@@ -12,8 +12,6 @@ int main()
 	
 	Image im(ImageWidth, ImageHeight);
 
-	
-
 	// Create object from file 
 	//Object objectFromFile("Models/monkey.obj");
 
@@ -63,14 +61,28 @@ int main()
 		,1,4,10,7,6,0,1
 	};
 	Object Room(roomVert, roomInd, roomCol);
-
+	
 	std::vector<Object> objList; 
 	objList.push_back(Room);
 	//objList.push_back(objectFromFile);
 
+	//Create Plane
+	std::vector<Polygon::Vertex> Plane1vert;
+	Plane1vert.push_back(Polygon::Vertex(Vec3(10, -4, -5), redcol));//4
+	Plane1vert.push_back(Polygon::Vertex(Vec3(10, -4, 5), redcol));//5
+	Plane1vert.push_back(Polygon::Vertex(Vec3(0, -4, -5), redcol));//10
+	Plane1vert.push_back(Polygon::Vertex(Vec3(0, -4, 5), redcol));//11
+	std::vector<int> PlaneInd = {
+		0,1,3,2,0
+	};
+
+	Object Plane1(Plane1vert, PlaneInd, redcol);
+	
+	objList.push_back(Plane1);
+
 	//Create Sphere
-	Material Sphere1Material(ColorDBL(1.0, 1.0, 0.0));
-	Sphere Sphere1(Vec3(10.0, 0.0, 0.0), 2.5, Sphere1Material);
+	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 0.0));
+	Sphere Sphere1(Vec3(10.0, -3, 0.0), 2.5, Sphere1Material);
 	Object MiddleSphere;
 	MiddleSphere.AddSphere(Sphere1);
 	objList.push_back(MiddleSphere);
@@ -114,6 +126,10 @@ int main()
 	im.ExportBPM("Images/MonkeyTest4.bmp");
 
 	std::cout << "Success! " << std::endl;
+
+	std::cout << "testing random:" << std::endl;
+	int randomnum = std::rand();
+	std::cout << randomnum << std::endl;
 
 	return 0;
 }

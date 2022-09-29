@@ -40,7 +40,10 @@ ColorDBL Ray::getColor() const
 	}
 	else if (hitSphere != nullptr)
 	{
-		return hitSphere->getColor();
+		if (hitSphere->getMaterial().getType() == Material::Type::mirror)
+			return ColorDBL(0.5, 0.5, 0.5);
+		else
+			return hitSphere->getColor();
 	}
 
 	return ColorDBL(0.0, 0.0, 0.0);
@@ -74,13 +77,28 @@ void Ray::setHit(double t, Sphere* sphere)
 
 ColorDBL Ray::castRay(std::vector<Object>& objs)
 {
-
+	//Check for intersections
 	for (int i = 0; i < objs.size(); i++)
 	{
 		objs[i].Intersection(*this);
 	}
+
+	//Cast next ray
+	if (hitSphere != nullptr && hitSphere->getMaterial().getType() == Material::mirror)
+	{
+		next = hitSphere->getMaterial().BRDF(hitSphere->getNormal(this->getEnd()), *this);
+		
+	}
 	
-	return this->getColor();
+
+	//Calculate color to return
+	ColorDBL result = this->getColor();
+	if (next != nullptr)
+	{
+		result = result * next->castRay(objs);
+	}
+	
+	return result;
 }
 
 /*

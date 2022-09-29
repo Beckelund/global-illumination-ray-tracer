@@ -14,7 +14,9 @@ public:
 	void Intersection(Ray& r);
 	Vec3 getNormal(Vec3 pos);
 	
-	ColorDBL getColor();
+	Material getMaterial() { return material; }
+	
+	ColorDBL getColor();	//For raycast atm
 
 private:
 	Vec3 position;
