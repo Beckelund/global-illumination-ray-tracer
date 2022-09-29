@@ -2,12 +2,14 @@
 #include <limits>
 #include "vec3.h"
 #include "colordbl.h"
-//#include "object.h"
 
 /*TODO*/
 /*
 	
 */
+
+class Polygon; // pre-definition of polygon
+
 
 #ifndef RAY_H
 #define RAY_H
@@ -27,18 +29,18 @@ public:
 	ColorDBL getColor() const;
 	//void setHit(double t, Polygon* obj, ColorDBL col);
 	void setHit(double t, ColorDBL col);
+	void setHit(double t, Vec3 hitPoint, Polygon* poygon);
 
 private:
 	Vec3 pos;
 	Vec3 dir;
+	Vec3 end; 
 	double t;
 
 	Ray* next;
 	Ray* prev;
 
-	//Object* originObject; 
-	//Object* hitObject;
-	//Polygon* hitPolygon;
+	Polygon* hitPolygon;
 
 	ColorDBL color;
 };

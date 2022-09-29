@@ -12,7 +12,7 @@ Object::Object(const char* filePath){
 
 	std::vector<int> ind;
 	std::vector<Polygon::Vertex> vert; 
-	const unsigned int maxLength = 40;
+	const unsigned int maxLength = 126;
 	
 	
 
@@ -41,6 +41,8 @@ Object::Object(const char* filePath){
 				ColorDBL(0.9, 0.9, 0.9)
 			));
 		}
+
+		// TODO: there is a bug where not all the vertecies are loaded into the vector
 		if (line[0] == 'f') { // face
 			std::string ln = line;
 			ln.erase(0, 2); // remove the f;

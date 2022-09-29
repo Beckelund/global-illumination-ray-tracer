@@ -26,10 +26,11 @@ int main()
 	double deltaHeight = cPlaneHeight / (double)ImageHeight;
 
 	// Create object from file 
-	Object objectFromFile("Models/test1.obj");
+	Object objectFromFile("Models/monkey.obj");
 
 
 	//Create Triangle object
+	/*
 	std::vector<Polygon::Vertex> poly;
 	ColorDBL polyCol1(1, 0, 0);
 	ColorDBL polyCol2(0, 1, 0);
@@ -43,6 +44,7 @@ int main()
 	poly.push_back(Polygon::Vertex(Vec3(3, -1.0, 0.75), polyCol5));
 	std::vector<int> polyInd = { 0,1,2,0,0,2,3,0,0,3,4,0};
 	Object triangle(poly, polyInd);
+	*/
 
 	// Create room object 
 	std::vector<Polygon::Vertex> roomVert;
@@ -71,8 +73,13 @@ int main()
 	};
 	Object Room(roomVert, roomInd);
 
+	std::vector<Object> objList; 
+	//objList.push_back(Room);
+	objList.push_back(objectFromFile);
+
 
 	for (int i = 0; i < ImageWidth; i++) {
+		std::cout << "Calculating :" << (i*100)/ImageWidth << "%";
 		for (int j = 0; j < ImageHeight; j++) {
 			double y = i * deltaWidth + c1.y + deltaWidth / 2;
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
@@ -80,14 +87,14 @@ int main()
 			Vec3 pixelPos = Vec3(c1.x, y, z);
 			Vec3 direction = (pixelPos-eye).normalize();
 			Ray r(eye, direction);
-			Room.Intersection(r);
-			//objectFromFile.Intersection(r);
+			for(auto &object : objList)
+				object.Intersection(r);
 			im.SetPixelColor(r.getColor(), i, j);
-			//im.SetPixelColor(ColorDBL(0, direction.y, direction.z), i, j);
 		}
+		std::cout << "\33[2K\r"; // Clear the line 
 	}
 
-	im.ExportBPM("Images/RoomTest7.bmp");
+	im.ExportBPM("Images/MonkeyTest4.bmp");
 
 	std::cout << "Success! " << std::endl;
 

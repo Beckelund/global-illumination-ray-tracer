@@ -38,3 +38,10 @@ void Ray::setHit(double t1, ColorDBL col) {
 		color = col;
 	}
 }
+
+void Ray::setHit(double t1,Vec3 hitPoint, Polygon* polygon) {
+	if (t1 < t) {
+		t = t1;
+		hitPolygon = polygon;
+	}
+}
