@@ -133,6 +133,7 @@
     <ClCompile Include="object.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="ray.cpp" />
+    <ClCompile Include="sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="colordbl.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="object.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="ray.h" />
+    <ClInclude Include="sphere.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

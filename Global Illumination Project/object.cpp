@@ -76,13 +76,31 @@ Object::Object(const char* filePath){
 	createPolygonsFromList(vert, ind);
 }
 
+//Create object from vertices
 Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind) {
 	createPolygonsFromList(vert, ind);
+}
+
+Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind, ColorDBL col) {
+	createPolygonsFromList(vert, ind);
+
+	for (auto& p : polygons) {
+		p.setColor(col);
+	}
+}
+
+
+void Object::AddSphere(Sphere in)
+{
+	spheres.push_back(in);
 }
 
 void Object::Intersection(Ray& r) {
 	for (auto& poly : polygons) {
 		poly.Intersection(r);
+	}
+	for (auto& sphere : spheres) {
+		sphere.Intersection(r);
 	}
 }
 

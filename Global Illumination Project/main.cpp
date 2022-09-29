@@ -11,22 +11,10 @@ int main()
 	
 	Image im(ImageWidth, ImageHeight);
 
-	//Create rays from camera
-	Vec3 eye = Vec3(-1, 0, 0);
-
-	Vec3 c1 = Vec3(0, -1, -1);
-	Vec3 c2 = Vec3(0, 1, -1);
-	Vec3 c3 = Vec3(0, 1, 1);
-	Vec3 c4 = Vec3(0, -1, 1);
-
-	double cPlaneWidth = c3.y - c4.y;
-	double cPlaneHeight = c4.z - c1.z;
-
-	double deltaWidth = cPlaneWidth / (double)ImageWidth;
-	double deltaHeight = cPlaneHeight / (double)ImageHeight;
+	
 
 	// Create object from file 
-	Object objectFromFile("Models/monkey.obj");
+	//Object objectFromFile("Models/monkey.obj");
 
 
 	//Create Triangle object
@@ -49,18 +37,20 @@ int main()
 	// Create room object 
 	std::vector<Polygon::Vertex> roomVert;
 	ColorDBL rcol(0.9, 0.9, 0.9);
+	ColorDBL roomCol(0.1, 0.9, 0.9);
+	ColorDBL redcol(0.9, 0.1, 0.1);
 	roomVert.push_back(Polygon::Vertex(Vec3(10, 6, -5), rcol));//0
 	roomVert.push_back(Polygon::Vertex(Vec3(13, 0, -5), rcol));//1
 	roomVert.push_back(Polygon::Vertex(Vec3(13, 0, 5), rcol));//2
 	roomVert.push_back(Polygon::Vertex(Vec3(10, 6, 5), rcol));//3
-	roomVert.push_back(Polygon::Vertex(Vec3(10, -6, -5), rcol));//4
-	roomVert.push_back(Polygon::Vertex(Vec3(10, -6, 5), rcol));//5
+	roomVert.push_back(Polygon::Vertex(Vec3(10, -6, -5), redcol));//4
+	roomVert.push_back(Polygon::Vertex(Vec3(10, -6, 5), redcol));//5
 	roomVert.push_back(Polygon::Vertex(Vec3(0, 6, -5), rcol));//6 
 	roomVert.push_back(Polygon::Vertex(Vec3(-3, 0, -5), rcol));//7
 	roomVert.push_back(Polygon::Vertex(Vec3(-3, 0, 5), rcol));//8
 	roomVert.push_back(Polygon::Vertex(Vec3(0, 6, 5), rcol));//9
-	roomVert.push_back(Polygon::Vertex(Vec3(0, -6, -5), rcol));//10
-	roomVert.push_back(Polygon::Vertex(Vec3(0, -6, 5), rcol));//11
+	roomVert.push_back(Polygon::Vertex(Vec3(0, -6, -5), redcol));//10
+	roomVert.push_back(Polygon::Vertex(Vec3(0, -6, 5), redcol));//11
 	std::vector<int> roomInd = {
 		0,3,2,1,0
 		,1,2,5,4,1
@@ -71,12 +61,32 @@ int main()
 		,2,3,9,8,11,5,2
 		,1,4,10,7,6,0,1
 	};
-	Object Room(roomVert, roomInd);
+	Object Room(roomVert, roomInd, roomCol);
 
 	std::vector<Object> objList; 
-	//objList.push_back(Room);
-	objList.push_back(objectFromFile);
+	objList.push_back(Room);
+	//objList.push_back(objectFromFile);
 
+	//Create Sphere
+	Sphere Sphere1(Vec3(10.0, 0.0, 0.0), 2.5, ColorDBL(0.1, 0.9, 0.1));
+	Object MiddleSphere;
+	MiddleSphere.AddSphere(Sphere1);
+	objList.push_back(MiddleSphere);
+
+
+	//Create rays from camera
+	Vec3 eye = Vec3(-0.5, 0, 0);
+
+	Vec3 c1 = Vec3(0, -1, -1);
+	Vec3 c2 = Vec3(0, 1, -1);
+	Vec3 c3 = Vec3(0, 1, 1);
+	Vec3 c4 = Vec3(0, -1, 1);
+
+	double cPlaneWidth = c3.y - c4.y;
+	double cPlaneHeight = c4.z - c1.z;
+
+	double deltaWidth = cPlaneWidth / (double)ImageWidth;
+	double deltaHeight = cPlaneHeight / (double)ImageHeight;
 
 	for (int i = 0; i < ImageWidth; i++) {
 		std::cout << "Calculating :" << (i*100)/ImageWidth << "%";
