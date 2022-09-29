@@ -40,7 +40,7 @@ void Ray::setHit(double t1, ColorDBL col) {
 		color = col;
 	}
 }
-
+/*
 void Ray::setHit(double t1, Polygon* polygon) {
 	if (t1 < t) {
 		t = t1;
@@ -57,8 +57,10 @@ void Ray::setHit(double t1, Sphere* sphere) {
 	}
 }
 
+*/
 
-
+/*
 ColorDBL Ray::castRay(std::vector<Object>& objs) {
 	return ColorDBL(1, 1, 0);
 }
+*/

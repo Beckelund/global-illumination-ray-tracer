@@ -101,7 +101,7 @@ int main()
 			Vec3 direction = (pixelPos-eye).normalize();
 			Ray r(eye, direction);
 
-			ColorDBL finalColor = r.castRay(objList);
+			ColorDBL finalColor = ColorDBL(1, 0, 1);//r.castRay(objList);
 			
 			im.SetPixelColor(finalColor, i, j);
 		}

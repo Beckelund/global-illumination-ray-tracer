@@ -11,6 +11,7 @@ Material::Material(Type t, ColorDBL col): Material(col) {
 	type = t;
 }
 
+/*
 Ray* Material::BRDF(Vec3 Normal, Ray& prev)
 {
 	Vec3 dir;
@@ -31,3 +32,4 @@ Ray* Material::BRDF(Vec3 Normal, Ray& prev)
 
 	return nullptr;
 }
+*/
