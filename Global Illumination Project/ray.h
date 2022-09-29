@@ -1,8 +1,8 @@
 #pragma once
 #include <limits>
 #include <vector>
-#include "vec3.h"
 //#include "object.h"
+#include "vec3.h"
 #include "colordbl.h"
 
 /*TODO*/
@@ -10,6 +10,7 @@
 	
 */
 
+class Object;
 class Polygon; // pre-definition of polygon
 class Sphere;// pre-definition of sphere
 
@@ -32,10 +33,13 @@ public:
 	Vec3 getEnd() const;
 	ColorDBL getColor() const;
 	//void setHit(double t, Polygon* obj, ColorDBL col);
-	void setHit(double t, ColorDBL col);
-	//void setHit(double t, Polygon* polygon);
-	//void setHit(double t, Sphere* sphere);
-	//ColorDBL castRay(std::vector<Object> &objs) ;
+	
+	//Set hit
+	void setHit(double t, ColorDBL col);	//TODO rule out this function
+	void setHit(double t, Polygon* polygon);
+	void setHit(double t, Sphere* sphere);
+	
+	ColorDBL castRay(std::vector<Object> &objs);
 
 
 private:

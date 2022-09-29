@@ -1,10 +1,10 @@
 #include "sphere.h"
 
-Sphere::Sphere(Vec3 pos, float rad, ColorDBL col)
+Sphere::Sphere(Vec3 pos, float rad, Material mat)
 {
 	position = pos;
 	radius = rad;
-	color = col;
+	material = mat;
 }
 
 void Sphere::Intersection(Ray& r)
@@ -22,9 +22,15 @@ void Sphere::Intersection(Ray& r)
 		t0 = t1; // if t0 is negative, let's use t1 instead 
 		if (t0 < 0) return; // both t0 and t1 are negative 
 	}
-	r.setHit(t0, color);
+	//r.setHit(t0, color);
+	r.setHit(t0, this);
 }
 
 Vec3 Sphere::getNormal(Vec3 pos) {
 	return (pos - position).normalize();
+}
+
+ColorDBL Sphere::getColor()
+{
+	return material.getColor();
 }

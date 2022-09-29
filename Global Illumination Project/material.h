@@ -12,6 +12,7 @@ public:
 
 	//Ray* BRDF(Vec3 Normal,Ray& prev);
 
+	ColorDBL getColor() { return color; }
 
 private: 
 	Type type;

@@ -4,11 +4,11 @@ Polygon::Polygon(std::vector<Vertex> vertices): vertices(vertices) {
 	Vec3 v1 = this->vertices[1].pos - this->vertices[0].pos;
 	Vec3 v2 = this->vertices[2].pos - this->vertices[0].pos;
 	normal = (v2 % v1).normalize();
-	color = ColorDBL(1.0, 1.0, 1.0);
+	material = ColorDBL(1.0, 1.0, 1.0);
 }
 
-Polygon::Polygon(std::vector<Vertex> vertices, ColorDBL col) : Polygon(vertices) {
-	color = col;
+Polygon::Polygon(std::vector<Vertex> vertices, Material mat) : Polygon(vertices) {
+	material = mat;
 }
 
 void Polygon::Intersection(Ray& r) {
@@ -45,8 +45,14 @@ void Polygon::Intersection(Ray& r) {
 			color = color * ((r.getDirection()*( - 1)) * normal);
 			*/
 			ColorDBL hitColor = this->getColor() * ((r.getDirection() * (-1)) * normal);	//Phong shader remove later
-			r.setHit(t, hitColor);
+			//r.setHit(t, ColorDBL(0.0,0.0,0.0));	//TODO remove later, use HitPolygon method instead
+			r.setHit(t, this);
 			return;
 		}
 	}
+}
+
+ColorDBL Polygon::getColor()
+{
+	return material.getColor();
 }

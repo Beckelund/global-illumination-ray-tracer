@@ -3,6 +3,7 @@
 #include "colordbl.h"
 #include "vec3.h"
 #include "ray.h"
+#include "material.h"
 
 class Polygon {
 public:
@@ -14,20 +15,20 @@ public:
 	};
 	
 	Polygon(std::vector<Vertex> vertices);
-	Polygon(std::vector<Vertex> vertices, ColorDBL col);
+	Polygon(std::vector<Vertex> vertices, Material mat);
 
 	void Intersection(Ray& r);
 
 	//Get
-	ColorDBL getColor() { return color; }
+	ColorDBL getColor();
 	Vec3 getNormal() { return normal; }
 
 	//Set
-	void setColor(ColorDBL col) { color = col; }
+	void setMaterial(Material mat) { material = mat; }
 
 private:
 	Vec3 normal;
 	std::vector<Vertex> vertices;
-	ColorDBL color;
+	Material material;
 };
 

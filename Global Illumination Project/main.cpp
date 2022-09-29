@@ -69,7 +69,8 @@ int main()
 	//objList.push_back(objectFromFile);
 
 	//Create Sphere
-	Sphere Sphere1(Vec3(10.0, 0.0, 0.0), 2.5, ColorDBL(0.1, 0.9, 0.1));
+	Material Sphere1Material(ColorDBL(1.0, 1.0, 0.0));
+	Sphere Sphere1(Vec3(10.0, 0.0, 0.0), 2.5, Sphere1Material);
 	Object MiddleSphere;
 	MiddleSphere.AddSphere(Sphere1);
 	objList.push_back(MiddleSphere);
@@ -99,11 +100,13 @@ int main()
 
 			Vec3 pixelPos = Vec3(c1.x, y, z);
 			Vec3 direction = (pixelPos-eye).normalize();
-			Ray r(eye, direction);
+			Ray* r = new Ray(eye, direction);
 
-			ColorDBL finalColor = ColorDBL(1, 0, 1);//r.castRay(objList);
+			ColorDBL result = r->castRay(objList);
+			ColorDBL finalColor = ColorDBL(1, 0, 1);
 			
-			im.SetPixelColor(finalColor, i, j);
+			
+			im.SetPixelColor(result, i, j);
 		}
 		std::cout << "\33[2K\r"; // Clear the line 
 	}

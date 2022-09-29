@@ -81,11 +81,11 @@ Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind) {
 	createPolygonsFromList(vert, ind);
 }
 
-Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind, ColorDBL col) {
+Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind, Material mat) {
 	createPolygonsFromList(vert, ind);
 
 	for (auto& p : polygons) {
-		p.setColor(col);
+		p.setMaterial(mat);
 	}
 }
 

@@ -1,4 +1,7 @@
 #include "ray.h"
+#include "object.h"
+#include "polygon.h"
+#include "sphere.h"
 
 Ray::Ray() : pos(Vec3(0, 0, 0)), dir(Vec3(1, 0, 0)), next(nullptr), prev(nullptr) {
 	t = DBL_MAX;
@@ -31,7 +34,16 @@ Vec3 Ray::getEnd() const {
 
 ColorDBL Ray::getColor() const
 {
-	return color;
+	if (hitPolygon != nullptr)
+	{
+		return hitPolygon->getColor();
+	}
+	else if (hitSphere != nullptr)
+	{
+		return hitSphere->getColor();
+	}
+
+	return ColorDBL(0.0, 0.0, 0.0);
 }
 
 void Ray::setHit(double t1, ColorDBL col) {
@@ -40,24 +52,36 @@ void Ray::setHit(double t1, ColorDBL col) {
 		color = col;
 	}
 }
-/*
-void Ray::setHit(double t1, Polygon* polygon) {
-	if (t1 < t) {
-		t = t1;
-		hitPolygon = polygon;
+
+void Ray::setHit(double t, Polygon* polygon)
+{
+	if (t < this->t) {
+		this->t = t;
 		hitSphere = nullptr;
+		hitPolygon = polygon;
 	}
 }
 
-void Ray::setHit(double t1, Sphere* sphere) {
-	if (t1 < t) {
-		t = t1;
+void Ray::setHit(double t, Sphere* sphere)
+{
+	if (t < this->t) {
+		this->t = t;
+		
 		hitSphere = sphere;
 		hitPolygon = nullptr;
 	}
 }
 
-*/
+ColorDBL Ray::castRay(std::vector<Object>& objs)
+{
+
+	for (int i = 0; i < objs.size(); i++)
+	{
+		objs[i].Intersection(*this);
+	}
+	
+	return this->getColor();
+}
 
 /*
 ColorDBL Ray::castRay(std::vector<Object>& objs) {
