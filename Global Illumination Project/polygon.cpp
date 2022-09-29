@@ -22,7 +22,6 @@ void Polygon::Intersection(Ray& r) {
 		double t = ((vertices[0].pos - r.getOrigin()) * normal) / demominator;
 		if (t < 0) // Behind the ray origin 
 			return;
-		Vec3 hitPoint = r.getPoint(t);
 
 
 		//triangle intersection (Möller Trumbore algorithm for trianlges)

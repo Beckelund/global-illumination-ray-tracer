@@ -2,6 +2,7 @@
 #include "vec3.h"
 #include "image.h"
 #include "object.h"
+#include "material.h"
 
 int main()
 {
@@ -73,6 +74,8 @@ int main()
 	MiddleSphere.AddSphere(Sphere1);
 	objList.push_back(MiddleSphere);
 
+	//Create material
+	Material m(Material::Type::mirror,ColorDBL(1.0,1.0,1.0));
 
 	//Create rays from camera
 	Vec3 eye = Vec3(-0.5, 0, 0);
@@ -97,9 +100,10 @@ int main()
 			Vec3 pixelPos = Vec3(c1.x, y, z);
 			Vec3 direction = (pixelPos-eye).normalize();
 			Ray r(eye, direction);
-			for(auto &object : objList)
-				object.Intersection(r);
-			im.SetPixelColor(r.getColor(), i, j);
+
+			ColorDBL finalColor = r.castRay(objList);
+			
+			im.SetPixelColor(finalColor, i, j);
 		}
 		std::cout << "\33[2K\r"; // Clear the line 
 	}
@@ -110,3 +114,25 @@ int main()
 
 	return 0;
 }
+
+
+
+
+/*
+			r1.castRay(objList)
+			{
+				...
+					if (hitobj->material != lamb || r1.inportance < (rand(0, 1)))
+						Ray r2 = hitobj->material.BRDF(Vec3 n, r1); {
+					r1->next = r2;
+						}
+				r2.castRay()
+					color = hitobj->material.color;
+
+
+			}*/
+
+
+
+
+

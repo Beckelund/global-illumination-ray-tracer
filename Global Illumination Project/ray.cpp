@@ -17,13 +17,15 @@ Vec3 Ray::getDirection() const {
 	return dir;
 }
 
-Vec3 Ray::getOrigin() const
-{
+Vec3 Ray::getOrigin() const {
 	return pos;
 }
 
-Vec3 Ray::getPoint(double t) const
-{
+Vec3 Ray::getPoint(double t) const {
+	return pos + dir * t;
+}
+
+Vec3 Ray::getEnd() const {
 	return pos + dir * t;
 }
 
@@ -39,9 +41,24 @@ void Ray::setHit(double t1, ColorDBL col) {
 	}
 }
 
-void Ray::setHit(double t1,Vec3 hitPoint, Polygon* polygon) {
+void Ray::setHit(double t1, Polygon* polygon) {
 	if (t1 < t) {
 		t = t1;
 		hitPolygon = polygon;
+		hitSphere = nullptr;
 	}
+}
+
+void Ray::setHit(double t1, Sphere* sphere) {
+	if (t1 < t) {
+		t = t1;
+		hitSphere = sphere;
+		hitPolygon = nullptr;
+	}
+}
+
+
+
+ColorDBL Ray::castRay(std::vector<Object>& objs) {
+	return ColorDBL(1, 1, 0);
 }

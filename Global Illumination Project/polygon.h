@@ -20,6 +20,7 @@ public:
 
 	//Get
 	ColorDBL getColor() { return color; }
+	Vec3 getNormal() { return normal; }
 
 	//Set
 	void setColor(ColorDBL col) { color = col; }

@@ -24,3 +24,7 @@ void Sphere::Intersection(Ray& r)
 	}
 	r.setHit(t0, color);
 }
+
+Vec3 Sphere::getNormal(Vec3 pos) {
+	return (pos - position).normalize();
+}
