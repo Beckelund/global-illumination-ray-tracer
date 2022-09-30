@@ -37,11 +37,11 @@ int main()
 	
 	
 
-	objList.push_back(Plane1);
+	//objList.push_back(Plane1);
 
 	//Create Sphere
 	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 0.0));
-	Sphere Sphere1(Vec3(10.0, -3, 0.0), 4.5, Sphere1Material);
+	Sphere Sphere1(Vec3(7.0, -3, -2), 4.5, Sphere1Material);
 	Object MiddleSphere;
 	MiddleSphere.AddSphere(Sphere1);
 	objList.push_back(MiddleSphere);
@@ -51,7 +51,7 @@ int main()
 
 	//Area Lights
 	std::vector<AreaLight> lightsList;
-	AreaLight light1(Vec3(1, -1, 5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 2000.0);
+	AreaLight light1(Vec3(1, -1, 4.9), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 20.0);
 	lightsList.push_back(light1);
 
 	//Create rays from camera

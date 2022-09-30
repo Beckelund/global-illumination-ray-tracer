@@ -92,44 +92,51 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	}
 	
 	//Direct light contribution
-	ColorDBL lightContribution = ColorDBL(0.0, 0.0, 0.0);
-	int n_samples = 10;
-	for (AreaLight& light : lights)
-	{
-		for (int i = 0; i < n_samples; i++)
+	ColorDBL lightContribution = ColorDBL(1.0, 0.0, 0.0);
+	Material::Type matType = Material::Type::lambertian;
+	if (hitPolygon != nullptr)
+		matType = hitPolygon->getMaterial().getType();
+	else if (hitSphere != nullptr)
+		matType = hitSphere->getMaterial().getType();
+	int n_samples = 2;
+	if (matType == Material::Type::lambertian) {
+		for (AreaLight& light : lights)
 		{
-			Vec3 point = light.RandomPoint();
-			//Check for intersections
-			Ray lightRay = Ray(point, (pos-point).normalize());
-			for (int i = 0; i < objs.size(); i++)
+			for (int i = 0; i < n_samples; i++)
 			{
-				objs[i].Intersection(lightRay);
-			}
+				Vec3 point = light.RandomPoint();
+				//Check for intersections
+				Ray lightRay = Ray(point, (this->getEnd() - point).normalize());
+				for (int i = 0; i < objs.size(); i++)
+				{
+					objs[i].Intersection(lightRay);
+				}
 			
-			if (lightRay.hitPolygon == this->hitPolygon && lightRay.hitSphere == this->hitSphere)
-			{
-				double rflct = 0.5;
-				if (hitPolygon != nullptr)
-					rflct = hitPolygon->getMaterial().getReflectivity();
-				else if (hitSphere != nullptr)
-					rflct = hitSphere->getMaterial().getReflectivity();
+				if (lightRay.hitPolygon == this->hitPolygon && lightRay.hitSphere == this->hitSphere)
+				{
+					double rflct = 0.5;
+					if (hitPolygon != nullptr)
+						rflct = hitPolygon->getMaterial().getReflectivity();
+					else if (hitSphere != nullptr)
+						rflct = hitSphere->getMaterial().getReflectivity();
 
-				Vec3 nrml = Vec3(1.0, 0.0, 0.0);
-				if (hitPolygon != nullptr)
-					nrml = hitPolygon->getNormal();
-				else if (hitSphere != nullptr)
-					nrml = hitSphere->getNormal(lightRay.getEnd());
+					Vec3 nrml = Vec3(1.0, 0.0, 0.0);
+					if (hitPolygon != nullptr)
+						nrml = hitPolygon->getNormal();
+					else if (hitSphere != nullptr)
+						nrml = hitSphere->getNormal(lightRay.getEnd());
 					
-				lightContribution = lightContribution
-					+ light.getColor() * (light.getArea() * light.getIrradiance() / (double)n_samples)
-					* (rflct / 3.14) * (lightRay.getDirection() * nrml);
+					lightContribution = lightContribution
+						+ light.getColor() * (light.getArea() * light.getIrradiance() / (double)n_samples)
+						* (rflct / 3.14) * ((lightRay.getDirection()*-1) * nrml);
+				}
 			}
 		}
 	}
 
 
 	//Calculate color to return
-	ColorDBL result = this->getColor();
+	ColorDBL result = ColorDBL(1, 1, 1);
 	result = result * lightContribution;
 	if (next != nullptr)
 	{
