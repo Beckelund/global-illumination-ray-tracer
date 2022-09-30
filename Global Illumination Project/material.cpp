@@ -1,7 +1,7 @@
 #include "material.h"
 #include "ray.h"
 
-Material::Material(): type(Material::Type::lambertian), color(ColorDBL(1.0,1.0,1.0)),reflectance(0.5),IOR(1.0) {
+Material::Material(): type(Material::Type::lambertian), color(ColorDBL(1.0,1.0,1.0)), reflectivity(0.5), IOR(1.0) {
 }
 
 Material::Material(ColorDBL col): Material() {

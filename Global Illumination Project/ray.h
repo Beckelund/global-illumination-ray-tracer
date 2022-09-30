@@ -4,6 +4,7 @@
 //#include "object.h"
 #include "vec3.h"
 #include "colordbl.h"
+#include <math.h>
 
 /*TODO*/
 /*
@@ -13,6 +14,7 @@
 class Object;
 class Polygon; // pre-definition of polygon
 class Sphere;// pre-definition of sphere
+class AreaLight;
 
 
 #ifndef RAY_H
@@ -39,7 +41,7 @@ public:
 	void setHit(double t, Polygon* polygon);
 	void setHit(double t, Sphere* sphere);
 	
-	ColorDBL castRay(std::vector<Object> &objs);
+	ColorDBL castRay(std::vector<Object> &objs, std::vector<AreaLight>& lights);
 
 
 private:

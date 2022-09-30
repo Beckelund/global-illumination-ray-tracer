@@ -22,6 +22,7 @@ public:
 	//Get
 	ColorDBL getColor();
 	Vec3 getNormal() { return normal; }
+	Material getMaterial() { return material; }
 
 	//Set
 	void setMaterial(Material mat) { material = mat; }

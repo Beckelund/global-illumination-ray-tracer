@@ -44,7 +44,7 @@ void Polygon::Intersection(Ray& r) {
 			ColorDBL color = vertices[0].col * v0 + vertices[i+1].col * v1 + vertices[i+2].col * v2;
 			color = color * ((r.getDirection()*( - 1)) * normal);
 			*/
-			ColorDBL hitColor = this->getColor() * ((r.getDirection() * (-1)) * normal);	//Phong shader remove later
+			//ColorDBL hitColor = this->getColor() * ((r.getDirection() * (-1)) * normal);	//Phong shader remove later
 			//r.setHit(t, ColorDBL(0.0,0.0,0.0));	//TODO remove later, use HitPolygon method instead
 			r.setHit(t, this);
 			return;

@@ -15,11 +15,12 @@ public:
 
 	ColorDBL getColor() { return color; }
 	Type getType() { return type; }
+	double getReflectivity() { return reflectivity; }
 
 private: 
 	Type type;
 	ColorDBL color;
-	float reflectance;
+	float reflectivity;
 	float IOR;
 
 };

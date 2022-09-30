@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="arealight.cpp" />
     <ClCompile Include="colordbl.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="main.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="arealight.h" />
     <ClInclude Include="colordbl.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="material.h" />

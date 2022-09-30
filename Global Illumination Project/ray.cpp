@@ -2,6 +2,7 @@
 #include "object.h"
 #include "polygon.h"
 #include "sphere.h"
+#include "arealight.h"
 
 Ray::Ray() : pos(Vec3(0, 0, 0)), dir(Vec3(1, 0, 0)), next(nullptr), prev(nullptr) {
 	t = DBL_MAX;
@@ -75,7 +76,7 @@ void Ray::setHit(double t, Sphere* sphere)
 	}
 }
 
-ColorDBL Ray::castRay(std::vector<Object>& objs)
+ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 {
 	//Check for intersections
 	for (int i = 0; i < objs.size(); i++)
@@ -90,16 +91,67 @@ ColorDBL Ray::castRay(std::vector<Object>& objs)
 		
 	}
 	
+	//Direct light contribution
+	ColorDBL lightContribution = ColorDBL(0.0, 0.0, 0.0);
+	int n_samples = 10;
+	for (AreaLight& light : lights)
+	{
+		for (int i = 0; i < n_samples; i++)
+		{
+			Vec3 point = light.RandomPoint();
+			//Check for intersections
+			Ray lightRay = Ray(point, (pos-point).normalize());
+			for (int i = 0; i < objs.size(); i++)
+			{
+				objs[i].Intersection(lightRay);
+			}
+			
+			if (lightRay.hitPolygon == this->hitPolygon && lightRay.hitSphere == this->hitSphere)
+			{
+				double rflct = 0.5;
+				if (hitPolygon != nullptr)
+					rflct = hitPolygon->getMaterial().getReflectivity();
+				else if (hitSphere != nullptr)
+					rflct = hitSphere->getMaterial().getReflectivity();
+
+				Vec3 nrml = Vec3(1.0, 0.0, 0.0);
+				if (hitPolygon != nullptr)
+					nrml = hitPolygon->getNormal();
+				else if (hitSphere != nullptr)
+					nrml = hitSphere->getNormal(lightRay.getEnd());
+					
+				lightContribution = lightContribution
+					+ light.getColor() * (light.getArea() * light.getIrradiance() / (double)n_samples)
+					* (rflct / 3.14) * (lightRay.getDirection() * nrml);
+			}
+		}
+	}
+
 
 	//Calculate color to return
 	ColorDBL result = this->getColor();
+	result = result * lightContribution;
 	if (next != nullptr)
 	{
-		result = result * next->castRay(objs);
+		result = result * next->castRay(objs, lights);
 	}
 	
+	
+
 	return result;
 }
+	//TODO remove this phong shading
+	/*
+	Vec3 l = (this->getEnd() - Vec3(0, -1, 2)).normalize();
+	if (hitPolygon != nullptr)
+	{
+		result = result * ((l * (-1)) * hitPolygon->getNormal());	//Phong shader remove later
+	}
+	if (hitSphere != nullptr)
+	{
+		result = result * ((l * (-1)) * hitSphere->getNormal(this->getEnd()));	//Phong shader remove later
+	}
+	*/
 
 /*
 ColorDBL Ray::castRay(std::vector<Object>& objs) {

@@ -3,6 +3,9 @@
 #include "image.h"
 #include "object.h"
 #include "material.h"
+#include "arealight.h"
+
+Object CreateRoom();
 
 int main()
 {
@@ -14,26 +17,89 @@ int main()
 
 	// Create object from file 
 	//Object objectFromFile("Models/monkey.obj");
+	
+	std::vector<Object> objList; 
+	objList.push_back(CreateRoom());
+	//objList.push_back(objectFromFile);
 
+	//Create Plane
+	ColorDBL redcol(0.9, 0.1, 0.1);
+	std::vector<Polygon::Vertex> Plane1vert;
+	Plane1vert.push_back(Polygon::Vertex(Vec3(10, -4, -5), redcol));//4
+	Plane1vert.push_back(Polygon::Vertex(Vec3(10, -4, 5), redcol));//5
+	Plane1vert.push_back(Polygon::Vertex(Vec3(0, -4, -5), redcol));//10
+	Plane1vert.push_back(Polygon::Vertex(Vec3(0, -4, 5), redcol));//11
+	std::vector<int> PlaneInd = {
+		0,1,3,2,0
+	};
 
-	//Create Triangle object
-	/*
-	std::vector<Polygon::Vertex> poly;
-	ColorDBL polyCol1(1, 0, 0);
-	ColorDBL polyCol2(0, 1, 0);
-	ColorDBL polyCol3(0, 0, 1);
-	ColorDBL polyCol4(1, 0, 1);
-	ColorDBL polyCol5(1, 1, 0);
-	poly.push_back(Polygon::Vertex(Vec3(3, -0.5, -0.5), polyCol1));
-	poly.push_back(Polygon::Vertex(Vec3(3, 1.5, -0.5), polyCol2));
-	poly.push_back(Polygon::Vertex(Vec3(3, 1.2, 1.2), polyCol3));
-	poly.push_back(Polygon::Vertex(Vec3(3, -0.5, 1.5), polyCol4));
-	poly.push_back(Polygon::Vertex(Vec3(3, -1.0, 0.75), polyCol5));
-	std::vector<int> polyInd = { 0,1,2,0,0,2,3,0,0,3,4,0};
-	Object triangle(poly, polyInd);
-	*/
+	Object Plane1(Plane1vert, PlaneInd, redcol);
+	
+	
 
-	// Create room object 
+	objList.push_back(Plane1);
+
+	//Create Sphere
+	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 0.0));
+	Sphere Sphere1(Vec3(10.0, -3, 0.0), 4.5, Sphere1Material);
+	Object MiddleSphere;
+	MiddleSphere.AddSphere(Sphere1);
+	objList.push_back(MiddleSphere);
+
+	//Create material
+	Material m(Material::Type::mirror,ColorDBL(1.0,1.0,1.0));
+
+	//Area Lights
+	std::vector<AreaLight> lightsList;
+	AreaLight light1(Vec3(1, -1, 5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 2000.0);
+	lightsList.push_back(light1);
+
+	//Create rays from camera
+	Vec3 eye = Vec3(-0.5, 0, 0);
+
+	Vec3 c1 = Vec3(0, -1, -1);
+	Vec3 c2 = Vec3(0, 1, -1);
+	Vec3 c3 = Vec3(0, 1, 1);
+	Vec3 c4 = Vec3(0, -1, 1);
+
+	double cPlaneWidth = c3.y - c4.y;
+	double cPlaneHeight = c4.z - c1.z;
+
+	double deltaWidth = cPlaneWidth / (double)ImageWidth;
+	double deltaHeight = cPlaneHeight / (double)ImageHeight;
+
+	for (int i = 0; i < ImageWidth; i++) {
+		std::cout << "Calculating :" << (i*100)/ImageWidth << "%";
+		for (int j = 0; j < ImageHeight; j++) {
+			double y = i * deltaWidth + c1.y + deltaWidth / 2;
+			double z = j * deltaHeight + c1.z + deltaHeight / 2;
+
+			Vec3 pixelPos = Vec3(c1.x, y, z);
+			Vec3 direction = (pixelPos-eye).normalize();
+			Ray* r = new Ray(eye, direction);
+
+			ColorDBL result = r->castRay(objList, lightsList);
+			ColorDBL finalColor = ColorDBL(1, 0, 1);
+			
+			
+			im.SetPixelColor(result, i, j);
+		}
+		std::cout << "\33[2K\r"; // Clear the line 
+	}
+
+	im.ExportBPM("Images/MonkeyTest4.bmp");
+
+	std::cout << "Success! " << std::endl;
+
+	std::cout << "testing random:" << std::endl;
+	int randomnum = std::rand();
+	std::cout << randomnum << std::endl;
+
+	return 0;
+}
+
+Object CreateRoom()
+{
 	std::vector<Polygon::Vertex> roomVert;
 	ColorDBL rcol(0.9, 0.9, 0.9);
 	ColorDBL roomCol(0.1, 0.9, 0.9);
@@ -61,79 +127,9 @@ int main()
 		,1,4,10,7,6,0,1
 	};
 	Object Room(roomVert, roomInd, roomCol);
-	
-	std::vector<Object> objList; 
-	objList.push_back(Room);
-	//objList.push_back(objectFromFile);
 
-	//Create Plane
-	std::vector<Polygon::Vertex> Plane1vert;
-	Plane1vert.push_back(Polygon::Vertex(Vec3(10, -4, -5), redcol));//4
-	Plane1vert.push_back(Polygon::Vertex(Vec3(10, -4, 5), redcol));//5
-	Plane1vert.push_back(Polygon::Vertex(Vec3(0, -4, -5), redcol));//10
-	Plane1vert.push_back(Polygon::Vertex(Vec3(0, -4, 5), redcol));//11
-	std::vector<int> PlaneInd = {
-		0,1,3,2,0
-	};
-
-	Object Plane1(Plane1vert, PlaneInd, redcol);
-	
-	objList.push_back(Plane1);
-
-	//Create Sphere
-	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 0.0));
-	Sphere Sphere1(Vec3(10.0, -3, 0.0), 2.5, Sphere1Material);
-	Object MiddleSphere;
-	MiddleSphere.AddSphere(Sphere1);
-	objList.push_back(MiddleSphere);
-
-	//Create material
-	Material m(Material::Type::mirror,ColorDBL(1.0,1.0,1.0));
-
-	//Create rays from camera
-	Vec3 eye = Vec3(-0.5, 0, 0);
-
-	Vec3 c1 = Vec3(0, -1, -1);
-	Vec3 c2 = Vec3(0, 1, -1);
-	Vec3 c3 = Vec3(0, 1, 1);
-	Vec3 c4 = Vec3(0, -1, 1);
-
-	double cPlaneWidth = c3.y - c4.y;
-	double cPlaneHeight = c4.z - c1.z;
-
-	double deltaWidth = cPlaneWidth / (double)ImageWidth;
-	double deltaHeight = cPlaneHeight / (double)ImageHeight;
-
-	for (int i = 0; i < ImageWidth; i++) {
-		std::cout << "Calculating :" << (i*100)/ImageWidth << "%";
-		for (int j = 0; j < ImageHeight; j++) {
-			double y = i * deltaWidth + c1.y + deltaWidth / 2;
-			double z = j * deltaHeight + c1.z + deltaHeight / 2;
-
-			Vec3 pixelPos = Vec3(c1.x, y, z);
-			Vec3 direction = (pixelPos-eye).normalize();
-			Ray* r = new Ray(eye, direction);
-
-			ColorDBL result = r->castRay(objList);
-			ColorDBL finalColor = ColorDBL(1, 0, 1);
-			
-			
-			im.SetPixelColor(result, i, j);
-		}
-		std::cout << "\33[2K\r"; // Clear the line 
-	}
-
-	im.ExportBPM("Images/MonkeyTest4.bmp");
-
-	std::cout << "Success! " << std::endl;
-
-	std::cout << "testing random:" << std::endl;
-	int randomnum = std::rand();
-	std::cout << randomnum << std::endl;
-
-	return 0;
+	return Room;
 }
-
 
 
 
