@@ -92,7 +92,7 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	}
 	
 	//Direct light contribution
-	ColorDBL lightContribution = ColorDBL(1.0, 0.0, 0.0);
+	ColorDBL lightContribution = ColorDBL(0.0, 0.0, 0.0);
 	Material::Type matType = Material::Type::lambertian;
 	if (hitPolygon != nullptr)
 		matType = hitPolygon->getMaterial().getType();
@@ -120,15 +120,16 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 					else if (hitSphere != nullptr)
 						rflct = hitSphere->getMaterial().getReflectivity();
 
-					Vec3 nrml = Vec3(1.0, 0.0, 0.0);
+					Vec3 nrml = Vec3(0.0, 1.0, 0.0);
 					if (hitPolygon != nullptr)
 						nrml = hitPolygon->getNormal();
 					else if (hitSphere != nullptr)
 						nrml = hitSphere->getNormal(lightRay.getEnd());
 					
+
 					lightContribution = lightContribution
 						+ light.getColor() * (light.getArea() * light.getIrradiance() / (double)n_samples)
-						* (rflct / 3.14) * ((lightRay.getDirection()*-1) * nrml);
+						* (rflct / 3.14) * ((lightRay.getDirection()*-1) * nrml)*(1/(lightRay.t * lightRay.t));
 				}
 			}
 		}
