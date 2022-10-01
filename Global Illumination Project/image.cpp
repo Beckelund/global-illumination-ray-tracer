@@ -1,32 +1,57 @@
 #include "image.h"
 
-Image::Image(int width, int height) : imageWidth(width), imageHeight(height), imagePixles(std::vector<ColorDBL>(width* height)) {}
+Image::Image(int width, int height) : imageWidth(width), imageHeight(height), imagePixels(std::vector<ColorDBL>(width* height)) {}
 
 void Image::SetPixelColor(const ColorDBL& c, int x, int y){
 	if (x >= imageWidth || y >= imageHeight)
 		return; // outside vector
-	imagePixles[imageWidth * y + x] = c;
+	imagePixels[imageWidth * y + x] = c;
 }
 
 ColorDBL Image::GetPixelColor(int x, int y) const {
 	if (x >= imageWidth || y >= imageHeight)
-		return imagePixles[0]; // outside vector
-	return imagePixles[imageWidth * y + x];
+		return imagePixels[0]; // outside vector
+	return imagePixels[imageWidth * y + x];
 }
 
 void Image::MapColor(colorMapping clmp) {
+	
+	//Different settings:
 	switch (clmp)
 	{
 	case Image::linear:
 		break;
 	case Image::logarithmic:
-		//TODO implement
+		for (ColorDBL& pixel : imagePixels)
+		{
+			pixel.setR(log(pixel.getR()));
+			pixel.setG(log(pixel.getG()));
+			pixel.setB(log(pixel.getB()));
+		}
 		break;
 	case Image::squareRoot:
-		//TODO implement
+		for (ColorDBL& pixel : imagePixels)
+		{
+			pixel.setR(sqrt(pixel.getR()));
+			pixel.setG(sqrt(pixel.getG()));
+			pixel.setB(sqrt(pixel.getB()));
+		}
 		break;
 	default:
 		break;
+	}
+
+	//Map values between (0,1)
+	double highest = 0.0;
+	for (ColorDBL& pixel : imagePixels)
+	{
+		if (pixel.getR() > highest) highest = pixel.getR();
+		if (pixel.getG() > highest) highest = pixel.getG();
+		if (pixel.getB() > highest) highest = pixel.getB();
+	}
+	for (ColorDBL& pixel : imagePixels)
+	{
+		pixel = pixel * (1.0 / highest);
 	}
 }
 

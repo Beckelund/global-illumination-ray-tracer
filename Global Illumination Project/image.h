@@ -21,7 +21,7 @@ public:
 private:
 	int imageWidth;
 	int imageHeight;
-	std::vector<ColorDBL> imagePixles;
+	std::vector<ColorDBL> imagePixels;
 
 
 };

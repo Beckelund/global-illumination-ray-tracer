@@ -51,7 +51,7 @@ int main()
 
 	//Area Lights
 	std::vector<AreaLight> lightsList;
-	AreaLight light1(Vec3(1, -1, 4.9), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 20.0);
+	AreaLight light1(Vec3(1, -1, 4.9), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 200000.0);
 	lightsList.push_back(light1);
 
 	//Create rays from camera
@@ -87,6 +87,7 @@ int main()
 		std::cout << "\33[2K\r"; // Clear the line 
 	}
 
+	im.MapColor(Image::logarithmic);
 	im.ExportBPM("Images/MonkeyTest4.bmp");
 
 	std::cout << "Success! " << std::endl;
