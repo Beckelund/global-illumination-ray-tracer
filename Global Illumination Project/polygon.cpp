@@ -26,7 +26,7 @@ void Polygon::Intersection(Ray& r) {
 
 		//triangle intersection (Möller Trumbore algorithm for trianlges)
 		Vec3 T = r.getOrigin() - vertices[0].pos;
-		Vec3 D = r.getDirection() - r.getOrigin();
+		Vec3 D = r.getDirection();// - r.getOrigin();
 		Vec3 E1 = vertices[i+1].pos - vertices[0].pos;
 		Vec3 E2 = vertices[i+2].pos - vertices[0].pos;
 		Vec3 P = D % E2;

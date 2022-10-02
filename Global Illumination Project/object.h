@@ -19,6 +19,8 @@ public:
 	void AddSphere(Sphere in);
 	void AddPolygon(Polygon in);
 
+	void SetMaterial(Material mat);
+
 	//Intersection
 	void Intersection(Ray& r);
 

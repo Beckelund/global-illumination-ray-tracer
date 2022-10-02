@@ -15,12 +15,9 @@ int main()
 	
 	Image im(ImageWidth, ImageHeight);
 
-	// Create object from file 
-	//Object objectFromFile("Models/monkey.obj");
 	
 	std::vector<Object> objList; 
 	objList.push_back(CreateRoom());
-	//objList.push_back(objectFromFile);
 
 	//Create Plane
 	ColorDBL redcol(0.9, 0.1, 0.1);
@@ -42,17 +39,27 @@ int main()
 	//Create Sphere
 	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 0.0));
 	Sphere Sphere1(Vec3(7.0, -3, -2), 4.5, Sphere1Material);
+	Sphere Sphere2(Vec3(7.0, 4, -1), 2.5, Sphere1Material);
 	Object MiddleSphere;
 	MiddleSphere.AddSphere(Sphere1);
+	MiddleSphere.AddSphere(Sphere2);
 	objList.push_back(MiddleSphere);
 
 	//Create material
 	Material m(Material::Type::mirror,ColorDBL(1.0,1.0,1.0));
 
+	// Create object from file 
+	Object objectFromFile("Models/monkey.obj");
+	objectFromFile.SetMaterial(m);
+	//objList.push_back(objectFromFile);
+
+
 	//Area Lights
 	std::vector<AreaLight> lightsList;
-	AreaLight light1(Vec3(1, -1, 4.9), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 200000.0);
+	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 0.2, 0.2), 200.0);
+	AreaLight light2(Vec3(1,5.5,0), Vec3(1, 0, 0), Vec3(0, 0, 1), ColorDBL(0.2, 1.0, 0.2), 200.0);
 	lightsList.push_back(light1);
+	lightsList.push_back(light2);
 
 	//Create rays from camera
 	Vec3 eye = Vec3(-0.5, 0, 0);
@@ -67,6 +74,7 @@ int main()
 
 	double deltaWidth = cPlaneWidth / (double)ImageWidth;
 	double deltaHeight = cPlaneHeight / (double)ImageHeight;
+	
 
 	for (int i = 0; i < ImageWidth; i++) {
 		std::cout << "Calculating :" << (i*100)/ImageWidth << "%";
@@ -81,14 +89,22 @@ int main()
 			ColorDBL result = r->castRay(objList, lightsList);
 			ColorDBL finalColor = ColorDBL(1, 0, 1);
 			
-			
+			delete r;
 			im.SetPixelColor(result, i, j);
 		}
 		std::cout << "\33[2K\r"; // Clear the line 
 	}
 
+	/*
+	im.MapColor(Image::linear);
+	im.ExportBPM("Images/MapLin2k.bmp");
+	*/
+	/*
 	im.MapColor(Image::logarithmic);
-	im.ExportBPM("Images/MonkeyTest4.bmp");
+	im.ExportBPM("Images/MapLog2k.bmp");
+	*/
+	im.MapColor(Image::squareRoot);
+	im.ExportBPM("Images/MapNoScaleSqr200.bmp");
 
 	std::cout << "Success! " << std::endl;
 

@@ -95,6 +95,14 @@ void Object::AddSphere(Sphere in)
 	spheres.push_back(in);
 }
 
+void Object::SetMaterial(Material mat)
+{
+	for (auto& poly : polygons)
+		poly.setMaterial(mat);
+
+	// TODO
+}
+
 void Object::Intersection(Ray& r) {
 	for (auto& poly : polygons) {
 		poly.Intersection(r);

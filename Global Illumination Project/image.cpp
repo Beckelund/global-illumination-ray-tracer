@@ -42,6 +42,7 @@ void Image::MapColor(colorMapping clmp) {
 	}
 
 	//Map values between (0,1)
+	/*
 	double highest = 0.0;
 	for (ColorDBL& pixel : imagePixels)
 	{
@@ -53,6 +54,7 @@ void Image::MapColor(colorMapping clmp) {
 	{
 		pixel = pixel * (1.0 / highest);
 	}
+	*/
 }
 
 void Image::ExportBPM(const char* filePath) const{
