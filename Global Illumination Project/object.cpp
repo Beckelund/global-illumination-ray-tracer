@@ -115,6 +115,12 @@ void Object::SetMaterial(Material mat)
 	// TODO
 }
 
+void Object::SetMaterial(Material mat, int index)
+{
+	if (index < surfaces.size())
+		surfaces[index]->setMaterial(mat);
+}
+
 bool Object::boundingIntersect(Ray& r)
 {
 	Vec3 L = origin - r.getOrigin();

@@ -59,7 +59,7 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	}
 
 	//Cast next ray
-	if (hitSurface != nullptr && hitSurface->getMaterial().getType() == Material::mirror)
+	if (hitSurface != nullptr && (hitSurface->getMaterial().getType() == Material::mirror || hitSurface->getMaterial().getType() == Material::lambertian))
 	{
 		next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
 	}

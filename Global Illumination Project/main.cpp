@@ -37,7 +37,7 @@ int main()
 	//objList.push_back(Plane1);
 
 	//Create Sphere
-	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 0.0));
+	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 1.0));
 	Sphere Sphere1(Vec3(7.0, -3, -2), 4.5, Sphere1Material);
 	Sphere Sphere2(Vec3(7.0, 4, -1), 2.5, Sphere1Material);
 	Object MiddleSphere;
@@ -56,10 +56,10 @@ int main()
 
 	//Area Lights
 	std::vector<AreaLight> lightsList;
-	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 0.2, 0.2), 200.0);
+	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 200.0);
 	AreaLight light2(Vec3(1,5.5,0), Vec3(1, 0, 0), Vec3(0, 0, 1), ColorDBL(0.2, 1.0, 0.2), 200.0);
 	lightsList.push_back(light1);
-	lightsList.push_back(light2);
+	//lightsList.push_back(light2);
 
 	//Create rays from camera
 	Vec3 eye = Vec3(-0.5, 0, 0);
@@ -82,14 +82,20 @@ int main()
 			double y = i * deltaWidth + c1.y + deltaWidth / 2;
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
-			Vec3 pixelPos = Vec3(c1.x, y, z);
-			Vec3 direction = (pixelPos-eye).normalize();
-			Ray* r = new Ray(eye, direction);
+			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
+			int max_samples = 1;
+			for (int sample = 0; sample < max_samples; sample++)
+			{
+				Vec3 pixelPos = Vec3(c1.x, y, z);
+				Vec3 direction = (pixelPos-eye).normalize();
+				Ray* r = new Ray(eye, direction);
 
-			ColorDBL result = r->castRay(objList, lightsList);
-			ColorDBL finalColor = ColorDBL(1, 0, 1);
+				result = result + r->castRay(objList, lightsList);
 			
-			delete r;
+				delete r;
+			}
+			result = result * (1.0 / (double) max_samples);
+
 			im.SetPixelColor(result, i, j);
 		}
 		std::cout << "\33[2K\r"; // Clear the line 
@@ -104,7 +110,7 @@ int main()
 	im.ExportBPM("Images/MapLog2k.bmp");
 	*/
 	im.MapColor(Image::squareRoot);
-	im.ExportBPM("Images/221003.bmp");
+	im.ExportBPM("Images/221003_3.bmp");
 
 	std::cout << "Success! " << std::endl;
 
@@ -119,7 +125,7 @@ Object CreateRoom()
 {
 	std::vector<Polygon::Vertex> roomVert;
 	ColorDBL rcol(0.9, 0.9, 0.9);
-	ColorDBL roomCol(0.1, 0.9, 0.9);
+	ColorDBL roomCol(0.9, 0.9, 0.9);
 	ColorDBL redcol(0.9, 0.1, 0.1);
 	roomVert.push_back(Polygon::Vertex(Vec3(10, 6, -5), rcol));//0
 	roomVert.push_back(Polygon::Vertex(Vec3(13, 0, -5), rcol));//1
@@ -144,6 +150,16 @@ Object CreateRoom()
 		,1,4,10,7,6,0,1
 	};
 	Object Room(roomVert, roomInd, roomCol);
+	
+	//4	//Right Wall
+	//5	//Left Wall
+	//6	//Roof
+	//7	//Floor
+	Material RED_WALL = ColorDBL(0.9, 0.05, 0.05);
+	Material GREEN_WALL = ColorDBL(0.05, 0.9, 0.05);
+	
+	Room.SetMaterial(RED_WALL, 5);
+	Room.SetMaterial(GREEN_WALL, 4);
 
 	return Room;
 }

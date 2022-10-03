@@ -18,6 +18,8 @@ public:
 	double getReflectivity() { return reflectivity; }
 
 private: 
+	Ray* lambertianReflector(Vec3 Normal, Ray& prev);
+
 	Type type;
 	ColorDBL color;
 	float reflectivity;

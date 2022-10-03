@@ -40,6 +40,7 @@ public:
 	
 	ColorDBL castRay(std::vector<Object> &objs, std::vector<AreaLight>& lights);
 
+	int maxBounce = 3;
 
 private:
 	Vec3 pos;

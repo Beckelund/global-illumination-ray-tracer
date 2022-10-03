@@ -19,7 +19,9 @@ public:
 	void AddSphere(Sphere in);
 	void AddPolygon(Polygon in);
 
+	//Set
 	void SetMaterial(Material mat);
+	void SetMaterial(Material mat, int index);	//For setting a specific surface
 
 
 	//Intersection
