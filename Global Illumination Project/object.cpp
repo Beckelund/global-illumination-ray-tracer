@@ -72,6 +72,17 @@ Object::Object(const char* filePath){
 		}
 
 	}
+	
+	//Set origin and bounding TODO remove later
+	if (vert.size() == 0) origin = Vec3(0, 0, 0);
+	else origin = vert[0].pos;
+
+	for (int i = 1; i < vert.size(); i++)
+	{
+		if ((vert[i].pos - origin).length() > bounding)
+			bounding = (vert[i].pos - origin).length();
+	}
+
 	std::reverse(ind.begin(),ind.end());
 	createPolygonsFromList(vert, ind);
 }
@@ -103,9 +114,29 @@ void Object::SetMaterial(Material mat)
 	// TODO
 }
 
+bool Object::boundingIntersect(Ray& r)
+{
+	Vec3 L = origin - r.getOrigin();
+	float tca = L * r.getDirection();
+	if (tca < 0) return false;
+	float d2 = L * L - tca * tca;
+	if (d2 > bounding * bounding) return false;
+	float thc = sqrt(bounding * bounding - d2);
+	float t0 = tca - thc;
+	float t1 = tca + thc;
+	if (t0 > t1) std::swap(t0, t1);
+	if (t0 < 0) {
+		t0 = t1; // if t0 is negative, let's use t1 instead 
+		if (t0 < 0) return false; // both t0 and t1 are negative 
+	}
+	
+	return true;
+}
+
 void Object::Intersection(Ray& r) {
 	for (auto& poly : polygons) {
-		poly.Intersection(r);
+		if(bounding == -1 || boundingIntersect(r) == true)//TODO remove this bounding check
+			poly.Intersection(r);
 	}
 	for (auto& sphere : spheres) {
 		sphere.Intersection(r);

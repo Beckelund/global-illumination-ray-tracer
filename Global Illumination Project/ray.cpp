@@ -89,6 +89,10 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	{
 		next = hitSphere->getMaterial().BRDF(hitSphere->getNormal(this->getEnd()), *this);
 	}
+	if (hitPolygon != nullptr && hitPolygon->getMaterial().getType() == Material::mirror)
+	{
+		next = hitPolygon->getMaterial().BRDF(hitPolygon->getNormal(), *this);
+	}
 	
 	//Direct light contribution
 	ColorDBL lightContribution = ColorDBL(0.0, 0.0, 0.0);
@@ -99,7 +103,7 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	else if (hitSphere != nullptr)
 		matType = hitSphere->getMaterial().getType();
 
-	int n_samples = 20;
+	int n_samples = 2;
 	if (matType == Material::Type::lambertian) {
 		for (AreaLight& light : lights)
 		{

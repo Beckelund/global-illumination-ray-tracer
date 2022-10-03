@@ -21,11 +21,16 @@ public:
 
 	void SetMaterial(Material mat);
 
+
 	//Intersection
 	void Intersection(Ray& r);
 
 private:
 	void createPolygonsFromList(std::vector<Polygon::Vertex>& vert, std::vector<int>& ind);
+
+	bool boundingIntersect(Ray& ray);	//TODO remove this function
+	Vec3 origin;	//for bounding check, TODO remove this
+	double bounding = -1;	//To optimize intersections TODO remove this
 	
 	std::vector<Polygon> polygons;
 	std::vector<Sphere> spheres;

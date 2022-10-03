@@ -41,7 +41,7 @@ int main()
 	Sphere Sphere1(Vec3(7.0, -3, -2), 4.5, Sphere1Material);
 	Sphere Sphere2(Vec3(7.0, 4, -1), 2.5, Sphere1Material);
 	Object MiddleSphere;
-	MiddleSphere.AddSphere(Sphere1);
+	//MiddleSphere.AddSphere(Sphere1);
 	MiddleSphere.AddSphere(Sphere2);
 	objList.push_back(MiddleSphere);
 
@@ -104,7 +104,7 @@ int main()
 	im.ExportBPM("Images/MapLog2k.bmp");
 	*/
 	im.MapColor(Image::squareRoot);
-	im.ExportBPM("Images/MapNoScaleSqr200.bmp");
+	im.ExportBPM("Images/221003.bmp");
 
 	std::cout << "Success! " << std::endl;
 
