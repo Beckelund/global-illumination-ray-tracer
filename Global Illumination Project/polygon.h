@@ -4,8 +4,9 @@
 #include "vec3.h"
 #include "ray.h"
 #include "material.h"
+#include "surface.h"
 
-class Polygon {
+class Polygon : public Surface {
 public:
 	struct Vertex {
 		Vec3 pos;
@@ -21,15 +22,12 @@ public:
 
 	//Get
 	ColorDBL getColor();
-	Vec3 getNormal() { return normal; }
-	Material getMaterial() { return material; }
+	Vec3 getNormal(Ray& r) { return normal; }
 
 	//Set
-	void setMaterial(Material mat) { material = mat; }
 
 private:
 	Vec3 normal;
 	std::vector<Vertex> vertices;
-	Material material;
 };
 

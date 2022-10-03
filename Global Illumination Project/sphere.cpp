@@ -7,16 +7,24 @@ Sphere::Sphere(Vec3 pos, float rad, Material mat)
 	material = mat;
 }
 
+Sphere::Sphere(const Sphere& copy)
+{
+	position = copy.position;
+	radius = copy.radius;
+	material = copy.material;
+}
+
+
 void Sphere::Intersection(Ray& r)
 {
 	Vec3 L = position - r.getOrigin();
-	float tca = L * r.getDirection();
+	double tca = L * r.getDirection();
 	if (tca < 0) return;
-	float d2 = L * L - tca * tca;
+	double d2 = L * L - tca * tca;
 	if (d2 > radius * radius) return;
-	float thc = sqrt(radius * radius - d2);
-	float t0 = tca - thc;
-	float t1 = tca + thc;
+	double thc = sqrt(radius * radius - d2);
+	double t0 = tca - thc;
+	double t1 = tca + thc;
 	if (t0 > t1) std::swap(t0, t1);
 	if (t0 < 0) {
 		t0 = t1; // if t0 is negative, let's use t1 instead 
@@ -26,8 +34,8 @@ void Sphere::Intersection(Ray& r)
 	r.setHit(t0, this);
 }
 
-Vec3 Sphere::getNormal(Vec3 pos) {
-	return (pos - position).normalize();
+Vec3 Sphere::getNormal(Ray& r) {
+	return (r.getEnd() - position).normalize();
 }
 
 ColorDBL Sphere::getColor()

@@ -1,20 +1,29 @@
 #include "ray.h"
 #include "object.h"
+#include "surface.h"
 #include "polygon.h"
 #include "sphere.h"
 #include "arealight.h"
 
-Ray::Ray() : pos(Vec3(0, 0, 0)), dir(Vec3(1, 0, 0)), next(nullptr), prev(nullptr) {
+Ray::Ray() : pos(Vec3(0, 0, 0)), dir(Vec3(1, 0, 0)), next(nullptr), prev(nullptr), hitSurface(nullptr) {
 	t = DBL_MAX;
 }
 
-Ray::Ray(Vec3 position, Vec3 direction) : pos(position), dir(direction), next(nullptr), prev(nullptr){
+Ray::Ray(Vec3 position = Vec3(0, 0, 0), Vec3 direction = Vec3(1, 0, 0)) : pos(position), dir(direction), next(nullptr), prev(nullptr), hitSurface(nullptr) {
 	t = DBL_MAX;
 }
 
 Ray::Ray(Vec3 position, Vec3 direction, Ray* previous) : Ray(position, direction) {
 	prev = previous;
 	t = DBL_MAX;
+}
+
+Ray::~Ray()
+{
+	delete next;
+	next = nullptr;
+	prev = nullptr;
+	hitSurface = nullptr;
 }
 
 Vec3 Ray::getDirection() const {
@@ -33,46 +42,11 @@ Vec3 Ray::getEnd() const {
 	return pos + dir * t;
 }
 
-ColorDBL Ray::getColor() const
-{
-	if (hitPolygon != nullptr)
-	{
-		return hitPolygon->getColor();
-	}
-	else if (hitSphere != nullptr)
-	{
-		if (hitSphere->getMaterial().getType() == Material::Type::mirror)
-			return ColorDBL(0.5, 0.5, 0.5);
-		else
-			return hitSphere->getColor();
-	}
-
-	return ColorDBL(0.0, 0.0, 0.0);
-}
-
-void Ray::setHit(double t1, ColorDBL col) {
-	if (t1 < t) {
-		t = t1;
-		color = col;
-	}
-}
-
-void Ray::setHit(double t, Polygon* polygon)
+void Ray::setHit(double t, Surface* surface)
 {
 	if (t < this->t) {
 		this->t = t;
-		hitSphere = nullptr;
-		hitPolygon = polygon;
-	}
-}
-
-void Ray::setHit(double t, Sphere* sphere)
-{
-	if (t < this->t) {
-		this->t = t;
-		
-		hitSphere = sphere;
-		hitPolygon = nullptr;
+		hitSurface = surface;
 	}
 }
 
@@ -85,23 +59,17 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	}
 
 	//Cast next ray
-	if (hitSphere != nullptr && hitSphere->getMaterial().getType() == Material::mirror)
+	if (hitSurface != nullptr && hitSurface->getMaterial().getType() == Material::mirror)
 	{
-		next = hitSphere->getMaterial().BRDF(hitSphere->getNormal(this->getEnd()), *this);
-	}
-	if (hitPolygon != nullptr && hitPolygon->getMaterial().getType() == Material::mirror)
-	{
-		next = hitPolygon->getMaterial().BRDF(hitPolygon->getNormal(), *this);
+		next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
 	}
 	
 	//Direct light contribution
 	ColorDBL lightContribution = ColorDBL(0.0, 0.0, 0.0);
 	
 	Material::Type matType = Material::Type::lambertian;
-	if (hitPolygon != nullptr)
-		matType = hitPolygon->getMaterial().getType();
-	else if (hitSphere != nullptr)
-		matType = hitSphere->getMaterial().getType();
+	if (hitSurface != nullptr)
+		matType = hitSurface->getMaterial().getType();
 
 	int n_samples = 2;
 	if (matType == Material::Type::lambertian) {
@@ -117,19 +85,15 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 					objs[i].Intersection(lightRay);
 				}
 			
-				if (lightRay.hitPolygon == this->hitPolygon && lightRay.hitSphere == this->hitSphere)
+				if (lightRay.hitSurface == this->hitSurface)
 				{
 					double rflct = 0.5;
-					if (hitPolygon != nullptr)
-						rflct = hitPolygon->getMaterial().getReflectivity();
-					else if (hitSphere != nullptr)
-						rflct = hitSphere->getMaterial().getReflectivity();
+					if(hitSurface != nullptr)
+						rflct = hitSurface->getMaterial().getReflectivity();
 
 					Vec3 nrml = Vec3(0.0, 1.0, 0.0);
-					if (hitPolygon != nullptr)
-						nrml = hitPolygon->getNormal();
-					else if (hitSphere != nullptr)
-						nrml = hitSphere->getNormal(lightRay.getEnd());
+					if (hitSurface != nullptr)
+						nrml = hitSurface->getNormal(lightRay);
 					
 
 					lightContribution = lightContribution
@@ -142,7 +106,7 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 
 
 	//Calculate color to return
-	ColorDBL result = ColorDBL(1, 1, 1);
+	ColorDBL result = (hitSurface == nullptr ? ColorDBL(1.0, 1.0, 1.0) : hitSurface->getMaterial().getColor());
 	result = result * lightContribution;
 	if (next != nullptr)
 		result = result + next->castRay(objs, lights);

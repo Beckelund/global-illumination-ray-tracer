@@ -136,6 +136,7 @@
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="sphere.cpp" />
+    <ClCompile Include="surface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arealight.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="polygon.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="sphere.h" />
+    <ClInclude Include="surface.h" />
     <ClInclude Include="vec3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

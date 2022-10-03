@@ -47,11 +47,11 @@ Object::Object(const char* filePath){
 			std::string ln = line;
 			ln.erase(0, 2); // remove the f;
 			int start = -1; 
-			int pos = 0;
+			size_t pos = 0;
 			while ((pos = ln.find(' ')) != std::string::npos ||!ln.empty()) {
 				std::string faceVertex = ln.substr(0, pos);
 				ln.erase(0, pos + 1);
-				int pos2 = 0;
+				size_t pos2 = 0;
 				int index = 0; 
 				while ((pos2 = faceVertex.find('/')) != std::string::npos) {
 					std::string v = faceVertex.substr(0, pos2);
@@ -94,22 +94,23 @@ Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind) {
 
 Object::Object(std::vector<Polygon::Vertex> vert, std::vector<int> ind, Material mat) {
 	createPolygonsFromList(vert, ind);
-
-	for (auto& p : polygons) {
-		p.setMaterial(mat);
+	
+	for (auto& s : surfaces)
+	{
+		s->setMaterial(mat);
 	}
 }
 
 
 void Object::AddSphere(Sphere in)
 {
-	spheres.push_back(in);
+	surfaces.push_back(new Sphere(in));
 }
 
 void Object::SetMaterial(Material mat)
 {
-	for (auto& poly : polygons)
-		poly.setMaterial(mat);
+	for (auto& surface : surfaces)
+		surface->setMaterial(mat);
 
 	// TODO
 }
@@ -117,13 +118,13 @@ void Object::SetMaterial(Material mat)
 bool Object::boundingIntersect(Ray& r)
 {
 	Vec3 L = origin - r.getOrigin();
-	float tca = L * r.getDirection();
+	double tca = L * r.getDirection();
 	if (tca < 0) return false;
-	float d2 = L * L - tca * tca;
+	double d2 = L * L - tca * tca;
 	if (d2 > bounding * bounding) return false;
-	float thc = sqrt(bounding * bounding - d2);
-	float t0 = tca - thc;
-	float t1 = tca + thc;
+	double thc = sqrt(bounding * bounding - d2);
+	double t0 = tca - thc;
+	double t1 = tca + thc;
 	if (t0 > t1) std::swap(t0, t1);
 	if (t0 < 0) {
 		t0 = t1; // if t0 is negative, let's use t1 instead 
@@ -134,29 +135,30 @@ bool Object::boundingIntersect(Ray& r)
 }
 
 void Object::Intersection(Ray& r) {
-	for (auto& poly : polygons) {
-		if(bounding == -1 || boundingIntersect(r) == true)//TODO remove this bounding check
-			poly.Intersection(r);
-	}
-	for (auto& sphere : spheres) {
-		sphere.Intersection(r);
+	
+	if (bounding != -1)	//TODO remove bounding box
+		if (boundingIntersect(r) == false) return;
+		
+	for (auto& surface : surfaces)
+	{
+		surface->Intersection(r);
 	}
 }
 
 
 void Object::createPolygonsFromList(std::vector<Polygon::Vertex> &vert, std::vector<int> &ind) {
 	int start = -1;
-	std::vector<Polygon::Vertex> polygon;
+	std::vector<Polygon::Vertex> vertices;
 	for (int i = 0; i < ind.size(); i++) {
 		if (start == -1) {
 			start = ind[i];
 		}
 		else if (start == ind[i]) {
-			polygons.push_back(Polygon(polygon));
-			polygon.clear();
+			surfaces.push_back(new Polygon(vertices));
+			vertices.clear();
 			start = -1;
 			continue;
 		}
-		polygon.push_back(vert[ind[i]]);
+		vertices.push_back(vert[ind[i]]);
 	}
 }

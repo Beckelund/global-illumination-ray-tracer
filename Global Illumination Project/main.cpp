@@ -51,7 +51,7 @@ int main()
 	// Create object from file 
 	Object objectFromFile("Models/monkey.obj");
 	objectFromFile.SetMaterial(m);
-	//objList.push_back(objectFromFile);
+	objList.push_back(objectFromFile);
 
 
 	//Area Lights

@@ -12,6 +12,7 @@
 */
 
 class Object;
+class Surface;
 class Polygon; // pre-definition of polygon
 class Sphere;// pre-definition of sphere
 class AreaLight;
@@ -22,24 +23,20 @@ class AreaLight;
 class Ray
 {
 public:
-	//Default
 	Ray();
-
 	Ray(Vec3 position, Vec3 direction);
-
 	Ray(Vec3 position, Vec3 direction, Ray* previous);
+
+	~Ray();
 
 	Vec3 getDirection() const;
 	Vec3 getOrigin() const;
 	Vec3 getPoint(double t) const;
 	Vec3 getEnd() const;
-	ColorDBL getColor() const;
 	//void setHit(double t, Polygon* obj, ColorDBL col);
 	
 	//Set hit
-	void setHit(double t, ColorDBL col);	//TODO rule out this function
-	void setHit(double t, Polygon* polygon);
-	void setHit(double t, Sphere* sphere);
+	void setHit(double t, Surface* surface);
 	
 	ColorDBL castRay(std::vector<Object> &objs, std::vector<AreaLight>& lights);
 
@@ -52,9 +49,6 @@ private:
 	Ray* next;
 	Ray* prev;
 
-	Polygon* hitPolygon;
-	Sphere* hitSphere;
-
-	ColorDBL color;
+	Surface* hitSurface;
 };
 #endif
