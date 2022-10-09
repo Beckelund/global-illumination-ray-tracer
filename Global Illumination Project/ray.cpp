@@ -15,6 +15,7 @@ Ray::Ray(Vec3 position = Vec3(0, 0, 0), Vec3 direction = Vec3(1, 0, 0)) : pos(po
 
 Ray::Ray(Vec3 position, Vec3 direction, Ray* previous) : Ray(position, direction) {
 	prev = previous;
+	originSurface = previous->hitSurface;
 	t = DBL_MAX;
 }
 
@@ -24,6 +25,7 @@ Ray::~Ray()
 	next = nullptr;
 	prev = nullptr;
 	hitSurface = nullptr;
+	originSurface = nullptr;
 }
 
 Vec3 Ray::getDirection() const {
@@ -40,6 +42,11 @@ Vec3 Ray::getPoint(double t) const {
 
 Vec3 Ray::getEnd() const {
 	return pos + dir * t;
+}
+
+Surface* Ray::getStarSurface() const
+{
+	return originSurface;
 }
 
 void Ray::setHit(double t, Surface* surface)
@@ -108,8 +115,10 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	//Calculate color to return
 	ColorDBL result = (hitSurface == nullptr ? ColorDBL(1.0, 1.0, 1.0) : hitSurface->getMaterial().getColor());
 	result = result * lightContribution;
-	if (next != nullptr)
-		result = result + next->castRay(objs, lights);
+	if (next != nullptr) {
+		ColorDBL MCColor = next->castRay(objs, lights);
+		result = result + MCColor * hitSurface->getMaterial().getColor();
+	}
 	
 	
 

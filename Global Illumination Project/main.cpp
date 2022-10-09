@@ -51,18 +51,18 @@ int main()
 	// Create object from file 
 	Object objectFromFile("Models/monkey.obj");
 	objectFromFile.SetMaterial(m);
-	objList.push_back(objectFromFile);
+	//objList.push_back(objectFromFile);
 
 
 	//Area Lights
 	std::vector<AreaLight> lightsList;
-	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 200.0);
+	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 20.0);
 	AreaLight light2(Vec3(1,5.5,0), Vec3(1, 0, 0), Vec3(0, 0, 1), ColorDBL(0.2, 1.0, 0.2), 200.0);
 	lightsList.push_back(light1);
 	//lightsList.push_back(light2);
 
 	//Create rays from camera
-	Vec3 eye = Vec3(-0.5, 0, 0);
+	Vec3 eye = Vec3(-1.0, 0, 0);
 
 	Vec3 c1 = Vec3(0, -1, -1);
 	Vec3 c2 = Vec3(0, 1, -1);
@@ -83,10 +83,10 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 1;
+			int max_samples = 10;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
-				Vec3 pixelPos = Vec3(c1.x, y, z);
+				Vec3 pixelPos = Vec3(c1.x, y + (rand()/RAND_MAX)*deltaWidth, z + (rand() / RAND_MAX) * deltaHeight);
 				Vec3 direction = (pixelPos-eye).normalize();
 				Ray* r = new Ray(eye, direction);
 
@@ -110,7 +110,7 @@ int main()
 	im.ExportBPM("Images/MapLog2k.bmp");
 	*/
 	im.MapColor(Image::squareRoot);
-	im.ExportBPM("Images/221003_3.bmp");
+	im.ExportBPM("Images/GItest6.bmp");
 
 	std::cout << "Success! " << std::endl;
 

@@ -38,18 +38,25 @@ Ray* Material::BRDF(Vec3 Normal, Ray& prev)
 Ray* Material::lambertianReflector(Vec3 Normal, Ray& prev)
 {
 	if (prev.maxBounce == 0) return nullptr;
+	// TODO Implement russian roulette  
 	
 	double azimuth = ((double)rand() / RAND_MAX) * 2 * 3.14;
-	double inclination = ((double)rand() / RAND_MAX) * 3.14;
+	double inclination = asin(sqrt(1 - ((double)rand() / RAND_MAX)));
 
+	Vec3 cl = Vec3(sin(inclination) * cos(azimuth), sin(inclination) * sin(azimuth), cos(inclination));
 
-	Vec3 cartesian = Vec3(sin(inclination) * cos(azimuth), sin(inclination) * sin(azimuth), cos(inclination));
-	if (cartesian * Normal > 0)
-		cartesian = cartesian * -1;
+	// Local coordianta
+	Vec3 zl = Normal;
+	Vec3 yl = prev.getDirection();
+	yl = yl - zl*(yl * zl);
+	yl = (yl * (-1)).normalize();
+	Vec3 xl = yl % zl;
+
+	Vec3 direction = cl.matrixMult(xl, yl, zl);
 
 	Vec3 startPoint = prev.getEnd();
 
-	Ray* r = new Ray(startPoint, cartesian);
+	Ray* r = new Ray(startPoint, direction, &prev);
 	r->maxBounce = prev.maxBounce - 1;
 	return r;
 }

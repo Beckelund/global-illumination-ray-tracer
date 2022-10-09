@@ -38,6 +38,13 @@ struct Vec3 {
     Vec3 normalize(){
         double l = this->length();
         return this->operator*(1 / l);
-    } 
+    }
+
+    Vec3 matrixMult(Vec3 col1, Vec3 col2, Vec3 col3) {
+        Vec3 row1 = Vec3(col1.x, col2.x, col3.x);
+        Vec3 row2 = Vec3(col1.y, col2.y, col3.y);
+        Vec3 row3 = Vec3(col1.z, col2.z, col3.z);
+        return Vec3(row1 * (*this), row2 * (*this), row3 * (*this));
+    }
 };
 #endif

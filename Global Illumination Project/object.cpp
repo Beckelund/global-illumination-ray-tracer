@@ -145,9 +145,9 @@ void Object::Intersection(Ray& r) {
 	if (bounding != -1)	//TODO remove bounding box
 		if (boundingIntersect(r) == false) return;
 		
-	for (auto& surface : surfaces)
-	{
-		surface->Intersection(r);
+	for (auto& surface : surfaces) {
+		if(surface != r.getStarSurface())
+			surface->Intersection(r);
 	}
 }
 

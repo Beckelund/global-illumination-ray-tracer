@@ -33,6 +33,7 @@ public:
 	Vec3 getOrigin() const;
 	Vec3 getPoint(double t) const;
 	Vec3 getEnd() const;
+	Surface* getStarSurface() const;
 	//void setHit(double t, Polygon* obj, ColorDBL col);
 	
 	//Set hit
@@ -51,5 +52,6 @@ private:
 	Ray* prev;
 
 	Surface* hitSurface;
+	Surface* originSurface;
 };
 #endif
