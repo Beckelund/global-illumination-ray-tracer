@@ -38,8 +38,11 @@ int main()
 
 	//Create Sphere
 	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 1.0));
+	Material TransparenMaterial(Material::transparent, ColorDBL(1.0, 1.0, 1.0));
+	TransparenMaterial.setIOR(1.5);
+
 	Sphere Sphere1(Vec3(7.0, -3, -2), 4.5, Sphere1Material);
-	Sphere Sphere2(Vec3(7.0, 4, -1), 2.5, Sphere1Material);
+	Sphere Sphere2(Vec3(7.0, 2, -1), 2.5, TransparenMaterial);
 	Object MiddleSphere;
 	//MiddleSphere.AddSphere(Sphere1);
 	MiddleSphere.AddSphere(Sphere2);
@@ -56,7 +59,7 @@ int main()
 
 	//Area Lights
 	std::vector<AreaLight> lightsList;
-	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 20.0);
+	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 70.0);
 	AreaLight light2(Vec3(1,5.5,0), Vec3(1, 0, 0), Vec3(0, 0, 1), ColorDBL(0.2, 1.0, 0.2), 200.0);
 	lightsList.push_back(light1);
 	//lightsList.push_back(light2);
@@ -83,10 +86,10 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 10;
+			int max_samples = 100;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
-				Vec3 pixelPos = Vec3(c1.x, y + (rand()/RAND_MAX)*deltaWidth, z + (rand() / RAND_MAX) * deltaHeight);
+				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
 				Vec3 direction = (pixelPos-eye).normalize();
 				Ray* r = new Ray(eye, direction);
 
@@ -109,8 +112,8 @@ int main()
 	im.MapColor(Image::logarithmic);
 	im.ExportBPM("Images/MapLog2k.bmp");
 	*/
-	im.MapColor(Image::squareRoot);
-	im.ExportBPM("Images/GItest6.bmp");
+	//im.MapColor(Image::squareRoot);
+	im.ExportBPM("Images/TransparentTest2.bmp");
 
 	std::cout << "Success! " << std::endl;
 

@@ -26,7 +26,7 @@ void Sphere::Intersection(Ray& r)
 	double t0 = tca - thc;
 	double t1 = tca + thc;
 	if (t0 > t1) std::swap(t0, t1);
-	if (t0 < 0) {
+	if (t0 < 0.0003) {
 		t0 = t1; // if t0 is negative, let's use t1 instead 
 		if (t0 < 0) return; // both t0 and t1 are negative 
 	}

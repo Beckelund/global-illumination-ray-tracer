@@ -34,6 +34,7 @@ public:
 	Vec3 getPoint(double t) const;
 	Vec3 getEnd() const;
 	Surface* getStarSurface() const;
+	Surface* getHitSurface() const;
 	//void setHit(double t, Polygon* obj, ColorDBL col);
 	
 	//Set hit
@@ -42,6 +43,7 @@ public:
 	ColorDBL castRay(std::vector<Object> &objs, std::vector<AreaLight>& lights);
 
 	int maxBounce = 3;
+	double speed = 1.0;
 
 private:
 	Vec3 pos;

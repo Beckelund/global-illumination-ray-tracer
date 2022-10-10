@@ -146,7 +146,7 @@ void Object::Intersection(Ray& r) {
 		if (boundingIntersect(r) == false) return;
 		
 	for (auto& surface : surfaces) {
-		if(surface != r.getStarSurface())
+		if (surface != r.getStarSurface() || surface->getMaterial().getType() == Material::Type::transparent)
 			surface->Intersection(r);
 	}
 }

@@ -17,13 +17,17 @@ public:
 	Type getType() { return type; }
 	double getReflectivity() { return reflectivity; }
 
+	void setIOR(double ior) { IOR = ior; }
+
 private: 
+	Ray* Reflection(Vec3 Normal, Ray& prev);
+	Ray* Refraction(Vec3 Normal, Ray& prev);
 	Ray* lambertianReflector(Vec3 Normal, Ray& prev);
 
 	Type type;
 	ColorDBL color;
-	float reflectivity;
-	float IOR;
+	double reflectivity;
+	double IOR;
 
 };
 

@@ -49,6 +49,11 @@ Surface* Ray::getStarSurface() const
 	return originSurface;
 }
 
+Surface* Ray::getHitSurface() const
+{
+	return hitSurface;
+}
+
 void Ray::setHit(double t, Surface* surface)
 {
 	if (t < this->t) {
@@ -66,7 +71,13 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	}
 
 	//Cast next ray
+	/*
 	if (hitSurface != nullptr && (hitSurface->getMaterial().getType() == Material::mirror || hitSurface->getMaterial().getType() == Material::lambertian))
+	{
+		next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
+	}
+	 */
+	if (hitSurface != nullptr)
 	{
 		next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
 	}
@@ -78,7 +89,7 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 	if (hitSurface != nullptr)
 		matType = hitSurface->getMaterial().getType();
 
-	int n_samples = 2;
+	int n_samples = 1;
 	if (matType == Material::Type::lambertian) {
 		for (AreaLight& light : lights)
 		{
