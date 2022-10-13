@@ -1,7 +1,7 @@
 #include "material.h"
 #include "ray.h"
 
-Material::Material(): type(Material::Type::lambertian), color(ColorDBL(1.0,1.0,1.0)), reflectivity(0.5), IOR(1.0) {
+Material::Material(): type(Material::Type::lambertian), color(ColorDBL(1.0,1.0,1.0)), reflectivity(0.8), IOR(1.0) {
 }
 
 Material::Material(ColorDBL col): Material() {
@@ -68,10 +68,14 @@ Ray* Material::Refraction(Vec3 Normal, Ray& prev) {
 
 
 Ray* Material::lambertianReflector(Vec3 Normal, Ray& prev) {
-	if (prev.maxBounce == 0) return nullptr;
+	//if (prev.maxBounce == 0) return nullptr;
 	// TODO Implement russian roulette  
 	
-	double azimuth = ((double)rand() / RAND_MAX) * 2 * 3.14;
+	// Russian roulette 
+	double azimuth = ((double)rand() / RAND_MAX) * 2 * 3.14/reflectivity;
+	if (azimuth > 2 * 3.14) return nullptr; // ray termination 
+
+
 	double inclination = asin(sqrt(1 - ((double)rand() / RAND_MAX)));
 
 	Vec3 cl = Vec3(sin(inclination) * cos(azimuth), sin(inclination) * sin(azimuth), cos(inclination));
@@ -84,6 +88,10 @@ Ray* Material::lambertianReflector(Vec3 Normal, Ray& prev) {
 	yl = (yl * (-1)).normalize();
 	Vec3 xl = yl % zl;
 
+	/*
+	if (cl * Normal < 0)
+		cl = cl * (-1);
+	*/
 
 	Vec3 direction = cl.matrixMult(xl, yl, zl);
 

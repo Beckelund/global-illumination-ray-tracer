@@ -70,50 +70,29 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 		objs[i].Intersection(*this);
 	}
 
+	if (hitSurface == nullptr) return ColorDBL(0.0, 0.0, 0.0); 
+
 	//Cast next ray
-	/*
-	if (hitSurface != nullptr && (hitSurface->getMaterial().getType() == Material::mirror || hitSurface->getMaterial().getType() == Material::lambertian))
-	{
-		next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
-	}
-	 */
-	if (hitSurface != nullptr)
-	{
-		next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
-	}
+	next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
 	
 	//Direct light contribution
 	ColorDBL lightContribution = ColorDBL(0.0, 0.0, 0.0);
-	
-	Material::Type matType = Material::Type::lambertian;
-	if (hitSurface != nullptr)
-		matType = hitSurface->getMaterial().getType();
-
+	Material::Type matType = hitSurface->getMaterial().getType();
 	int n_samples = 1;
 	if (matType == Material::Type::lambertian) {
-		for (AreaLight& light : lights)
-		{
-			for (int i = 0; i < n_samples; i++)
-			{
+		for (AreaLight& light : lights) {
+			for (int i = 0; i < n_samples; i++) {
 				Vec3 point = light.RandomPoint();
 				//Check for intersections
 				Ray lightRay = Ray(point, (this->getEnd() - point).normalize());
-				for (int i = 0; i < objs.size(); i++)
-				{
+				for (int i = 0; i < objs.size(); i++) {
 					objs[i].Intersection(lightRay);
 				}
 			
-				if (lightRay.hitSurface == this->hitSurface)
-				{
-					double rflct = 0.5;
-					if(hitSurface != nullptr)
-						rflct = hitSurface->getMaterial().getReflectivity();
-
-					Vec3 nrml = Vec3(0.0, 1.0, 0.0);
-					if (hitSurface != nullptr)
-						nrml = hitSurface->getNormal(lightRay);
+				if (lightRay.hitSurface == this->hitSurface) {
+					double rflct = hitSurface->getMaterial().getReflectivity();
+					Vec3 nrml = hitSurface->getNormal(lightRay);
 					
-
 					lightContribution = lightContribution
 						+ light.getColor() * (light.getArea() * light.getIrradiance() / (double)n_samples)
 						* (rflct / 3.14) * ((lightRay.getDirection()*-1) * nrml)*(1/(lightRay.t * lightRay.t));
@@ -122,34 +101,13 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 		}
 	}
 
-
 	//Calculate color to return
-	ColorDBL result = (hitSurface == nullptr ? ColorDBL(1.0, 1.0, 1.0) : hitSurface->getMaterial().getColor());
+	ColorDBL result = hitSurface->getMaterial().getColor();
 	result = result * lightContribution;
 	if (next != nullptr) {
 		ColorDBL MCColor = next->castRay(objs, lights);
 		result = result + MCColor * hitSurface->getMaterial().getColor();
 	}
 	
-	
-
 	return result;
 }
-	//TODO remove this phong shading
-	/*
-	Vec3 l = (this->getEnd() - Vec3(0, -1, 2)).normalize();
-	if (hitPolygon != nullptr)
-	{
-		result = result * ((l * (-1)) * hitPolygon->getNormal());	//Phong shader remove later
-	}
-	if (hitSphere != nullptr)
-	{
-		result = result * ((l * (-1)) * hitSphere->getNormal(this->getEnd()));	//Phong shader remove later
-	}
-	*/
-
-/*
-ColorDBL Ray::castRay(std::vector<Object>& objs) {
-	return ColorDBL(1, 1, 0);
-}
-*/

@@ -5,6 +5,7 @@
 #include "material.h"
 #include "arealight.h"
 
+
 Object CreateRoom();
 
 int main()
@@ -86,7 +87,7 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 100;
+			int max_samples = 10;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
 				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
@@ -94,7 +95,6 @@ int main()
 				Ray* r = new Ray(eye, direction);
 
 				result = result + r->castRay(objList, lightsList);
-			
 				delete r;
 			}
 			result = result * (1.0 / (double) max_samples);
@@ -113,7 +113,7 @@ int main()
 	im.ExportBPM("Images/MapLog2k.bmp");
 	*/
 	//im.MapColor(Image::squareRoot);
-	im.ExportBPM("Images/TransparentTest2.bmp");
+	im.ExportBPM("Images/RRtest3.bmp");
 
 	std::cout << "Success! " << std::endl;
 
