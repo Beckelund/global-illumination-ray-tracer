@@ -5,7 +5,7 @@
 #include "material.h"
 #include "arealight.h"
 
-
+std::string getCurrentTime();
 Object CreateRoom();
 
 int main()
@@ -87,7 +87,7 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 10;
+			int max_samples = 1;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
 				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
@@ -113,15 +113,41 @@ int main()
 	im.ExportBPM("Images/MapLog2k.bmp");
 	*/
 	//im.MapColor(Image::squareRoot);
-	im.ExportBPM("Images/RRtest3.bmp");
+	
+	//Write File
+	std::string fDate = getCurrentTime();
+	std::string fPath = "Images/" + fDate + ".bmp";
+
+	const char* str = fPath.c_str();
+	im.ExportBPM(str);
 
 	std::cout << "Success! " << std::endl;
 
+	//Test Random
 	std::cout << "testing random:" << std::endl;
 	int randomnum = std::rand();
 	std::cout << randomnum << std::endl;
 
 	return 0;
+}
+
+
+
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
+std::string getCurrentTime()
+{
+	auto t = std::time(nullptr);
+#pragma warning(suppress : 4996)
+	auto tm = *std::localtime(&t);
+
+	std::ostringstream oss;
+	oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+	auto str = oss.str();
+	std::replace(str.begin(), str.end(), ' ', '_'); // replace all 'x' to 'y'
+	return str;
 }
 
 Object CreateRoom()
