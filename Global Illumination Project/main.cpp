@@ -5,14 +5,16 @@
 #include "material.h"
 #include "arealight.h"
 
+#include <chrono>	//Estimated render time calculation
+
 std::string getCurrentTime();
 Object CreateRoom();
 
 int main()
 {
 	//Create image 
-	int ImageWidth = 600;
-	int ImageHeight = 600; 
+	int ImageWidth = 1600;
+	int ImageHeight = 1600; 
 	
 	Image im(ImageWidth, ImageHeight);
 
@@ -42,10 +44,10 @@ int main()
 	Material TransparenMaterial(Material::transparent, ColorDBL(1.0, 1.0, 1.0));
 	TransparenMaterial.setIOR(1.5);
 
-	Sphere Sphere1(Vec3(7.0, -3, -2), 4.5, Sphere1Material);
-	Sphere Sphere2(Vec3(7.0, 2, -1), 2.5, TransparenMaterial);
+	Sphere Sphere1(Vec3(7.0, -2, -2), 1.75, Sphere1Material);
+	Sphere Sphere2(Vec3(7.0, 2, -1), 2.25, TransparenMaterial);
 	Object MiddleSphere;
-	//MiddleSphere.AddSphere(Sphere1);
+	MiddleSphere.AddSphere(Sphere1);
 	MiddleSphere.AddSphere(Sphere2);
 	objList.push_back(MiddleSphere);
 
@@ -60,7 +62,7 @@ int main()
 
 	//Area Lights
 	std::vector<AreaLight> lightsList;
-	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 70.0);
+	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 80.0);
 	AreaLight light2(Vec3(1,5.5,0), Vec3(1, 0, 0), Vec3(0, 0, 1), ColorDBL(0.2, 1.0, 0.2), 200.0);
 	lightsList.push_back(light1);
 	//lightsList.push_back(light2);
@@ -79,15 +81,29 @@ int main()
 	double deltaWidth = cPlaneWidth / (double)ImageWidth;
 	double deltaHeight = cPlaneHeight / (double)ImageHeight;
 	
+	const clock_t begin_time = clock();
+
+	int totalPixels = ImageHeight * ImageWidth;
+	int countPixels = 1;
+	// do something
 
 	for (int i = 0; i < ImageWidth; i++) {
 		std::cout << "Calculating :" << (i*100)/ImageWidth << "%";
+
+		
+		double totalTime = (float(clock() - begin_time) / CLOCKS_PER_SEC) / 60.0;
+		double timePerPixel = totalTime / (double)countPixels;
+		double timeLeft = timePerPixel * (totalPixels - countPixels);
+		
+		std::cout << " Minutes left: " << timeLeft;
+
 		for (int j = 0; j < ImageHeight; j++) {
+			++countPixels;
 			double y = i * deltaWidth + c1.y + deltaWidth / 2;
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 1;
+			int max_samples = 150;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
 				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
@@ -120,9 +136,11 @@ int main()
 
 	const char* str = fPath.c_str();
 	//im.ExportBPM(str);
-	im.ExportBPM("Images/2022-10-13.bmp");
+	im.ExportBPM("Images/2022-10-13_BIG_RENDER200.bmp");
+
 
 	std::cout << "Success! " << std::endl;
+	std::cout << "Total time passed: " << (float(clock() - begin_time) / CLOCKS_PER_SEC) / 60.0 << " Minutes" << std::endl;
 
 	//Test Random
 	std::cout << "testing random:" << std::endl;
