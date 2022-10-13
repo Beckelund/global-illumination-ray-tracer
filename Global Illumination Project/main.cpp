@@ -119,7 +119,8 @@ int main()
 	std::string fPath = "Images/" + fDate + ".bmp";
 
 	const char* str = fPath.c_str();
-	im.ExportBPM(str);
+	//im.ExportBPM(str);
+	im.ExportBPM("Images/2022-10-13.bmp");
 
 	std::cout << "Success! " << std::endl;
 
