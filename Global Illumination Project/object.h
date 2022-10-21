@@ -27,6 +27,8 @@ public:
 	//Intersection
 	void Intersection(Ray& r);
 
+	std::vector<Surface*> getTransparentSurfaces();
+
 private:
 	void createPolygonsFromList(std::vector<Polygon::Vertex>& vert, std::vector<int>& ind);
 

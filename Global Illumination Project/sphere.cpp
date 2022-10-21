@@ -1,10 +1,11 @@
 #include "sphere.h"
 
-Sphere::Sphere(Vec3 pos, float rad, Material mat)
+Sphere::Sphere(Vec3 pos, double rad, Material mat)
 {
 	position = pos;
 	radius = rad;
 	material = mat;
+	type = Surface::Type::Sphere;
 }
 
 Sphere::Sphere(const Sphere& copy)
@@ -12,6 +13,7 @@ Sphere::Sphere(const Sphere& copy)
 	position = copy.position;
 	radius = copy.radius;
 	material = copy.material;
+	type = Surface::Type::Sphere;
 }
 
 

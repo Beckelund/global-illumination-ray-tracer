@@ -27,6 +27,7 @@ public:
 	//Set
 
 private:
+	Type type = Surface::Type::Polygon;
 	Vec3 normal;
 	std::vector<Vertex> vertices;
 };

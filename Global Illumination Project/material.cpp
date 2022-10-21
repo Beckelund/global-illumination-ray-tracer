@@ -22,7 +22,7 @@ Ray* Material::BRDF(Vec3 Normal, Ray& prev) {
 		break;
 	case Material::transparent:
 		R0 = pow((prev.speed - IOR) / (prev.speed + IOR), 2);
-		if (prev.getStarSurface() == prev.getHitSurface()) {
+		if (prev.getStartSurface() == prev.getHitSurface()) {
 			Normal = Normal * (-1);
 			R0 = pow((IOR - prev.speed) / (prev.speed + IOR), 2);
 		}
@@ -52,7 +52,7 @@ Ray* Material::Reflection(Vec3 Normal, Ray& prev) {
 Ray* Material::Refraction(Vec3 Normal, Ray& prev) {
 	double newSpeed = IOR;
 	double R = (prev.speed / IOR);
-	if (prev.getStarSurface() == prev.getHitSurface()) {
+	if (prev.getStartSurface() == prev.getHitSurface()) {
 		R = IOR;
 		newSpeed = 1;
 	}
@@ -98,6 +98,5 @@ Ray* Material::lambertianReflector(Vec3 Normal, Ray& prev) {
 	Vec3 startPoint = prev.getEnd();
 
 	Ray* r = new Ray(startPoint, direction, &prev);
-	r->maxBounce = prev.maxBounce - 1;
 	return r;
 }

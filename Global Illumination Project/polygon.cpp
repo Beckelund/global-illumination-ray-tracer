@@ -5,10 +5,12 @@ Polygon::Polygon(std::vector<Vertex> vertices): vertices(vertices) {
 	Vec3 v2 = this->vertices[2].pos - this->vertices[0].pos;
 	normal = (v2 % v1).normalize();
 	material = ColorDBL(1.0, 1.0, 1.0);
+	type = Surface::Type::Polygon;
 }
 
 Polygon::Polygon(std::vector<Vertex> vertices, Material mat) : Polygon(vertices) {
 	material = mat;
+	type = Surface::Type::Polygon;
 }
 
 void Polygon::Intersection(Ray& r) {

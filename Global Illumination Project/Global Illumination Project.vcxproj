@@ -133,6 +133,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="photon.cpp" />
+    <ClCompile Include="photonmap.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="sphere.cpp" />
@@ -144,6 +146,8 @@
     <ClInclude Include="image.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="photon.h" />
+    <ClInclude Include="photonmap.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="sphere.h" />

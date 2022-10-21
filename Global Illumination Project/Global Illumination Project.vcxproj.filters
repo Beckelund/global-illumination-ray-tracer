@@ -45,6 +45,12 @@
     <ClCompile Include="surface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="photon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="photonmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ray.h">
@@ -75,6 +81,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="surface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="photon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="photonmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -146,9 +146,22 @@ void Object::Intersection(Ray& r) {
 		if (boundingIntersect(r) == false) return;
 		
 	for (auto& surface : surfaces) {
-		if (surface != r.getStarSurface() || surface->getMaterial().getType() == Material::Type::transparent)
+		if (surface != r.getStartSurface() || surface->getMaterial().getType() == Material::Type::transparent)
 			surface->Intersection(r);
 	}
+}
+
+std::vector<Surface*> Object::getTransparentSurfaces()
+{
+	std::vector<Surface*> result;
+
+	for (auto& surface : surfaces)
+	{
+		if (surface->getMaterial().getType() == Material::Type::transparent)
+			result.push_back(surface);
+	}
+
+	return result;
 }
 
 

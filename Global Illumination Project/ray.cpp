@@ -4,12 +4,13 @@
 #include "polygon.h"
 #include "sphere.h"
 #include "arealight.h"
+#include "photonmap.h"
 
-Ray::Ray() : pos(Vec3(0, 0, 0)), dir(Vec3(1, 0, 0)), next(nullptr), prev(nullptr), hitSurface(nullptr) {
+Ray::Ray() : pos(Vec3(0, 0, 0)), dir(Vec3(1, 0, 0)), next(nullptr), prev(nullptr), hitSurface(nullptr), originSurface(nullptr) {
 	t = DBL_MAX;
 }
 
-Ray::Ray(Vec3 position = Vec3(0, 0, 0), Vec3 direction = Vec3(1, 0, 0)) : pos(position), dir(direction), next(nullptr), prev(nullptr), hitSurface(nullptr) {
+Ray::Ray(Vec3 position = Vec3(0, 0, 0), Vec3 direction = Vec3(1, 0, 0)) : pos(position), dir(direction), next(nullptr), prev(nullptr), hitSurface(nullptr), originSurface(nullptr) {
 	t = DBL_MAX;
 }
 
@@ -44,7 +45,7 @@ Vec3 Ray::getEnd() const {
 	return pos + dir * t;
 }
 
-Surface* Ray::getStarSurface() const
+Surface* Ray::getStartSurface() const
 {
 	return originSurface;
 }
@@ -62,7 +63,7 @@ void Ray::setHit(double t, Surface* surface)
 	}
 }
 
-ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
+ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights, PhotonMap& photonmap, bool has_hit_lambertian)
 {
 	//Check for intersections
 	for (int i = 0; i < objs.size(); i++)
@@ -72,10 +73,44 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 
 	if (hitSurface == nullptr) return ColorDBL(0.0, 0.0, 0.0); 
 
-	//Cast next ray
-	next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
+	ColorDBL photonContribution = ColorDBL(0.0, 0.0, 0.0);
+	double max_radius = 5.0;
+	if (has_hit_lambertian == false && hitSurface->getMaterial().getType() == Material::Type::lambertian)
+	{
+		has_hit_lambertian = true;
+		//std::cout << photonmap.photons.size() << std::endl;
+		for (Photon& p : photonmap.photons)
+		{
+			double distance = (p.getPosition() - this->getEnd()).length();
+
+			if (distance < max_radius)
+			{
+				//std::cout << "we here :)" << std::endl;
+				return ColorDBL(0.0, 0.0, 100.0);
+			}
+		}
+	}		
 	
 	//Direct light contribution
+	ColorDBL lightContribution = DirectLightContribution(objs, lights);
+		
+	//Calculate color to return
+	ColorDBL result = hitSurface->getMaterial().getColor();
+	result = result * lightContribution + result * photonContribution;
+	
+	//Cast next ray
+	next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
+	if (next != nullptr) {
+		ColorDBL MCColor = next->castRay(objs, lights, photonmap, has_hit_lambertian);
+		result = result + MCColor * hitSurface->getMaterial().getColor();
+	}
+	
+	return result;
+}
+
+
+ColorDBL Ray::DirectLightContribution(std::vector<Object>& objs, std::vector<AreaLight>& lights)
+{
 	ColorDBL lightContribution = ColorDBL(0.0, 0.0, 0.0);
 	Material::Type matType = hitSurface->getMaterial().getType();
 	int n_samples = 1;
@@ -88,26 +123,40 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights)
 				for (int i = 0; i < objs.size(); i++) {
 					objs[i].Intersection(lightRay);
 				}
-			
+
 				if (lightRay.hitSurface == this->hitSurface) {
 					double rflct = hitSurface->getMaterial().getReflectivity();
 					Vec3 nrml = hitSurface->getNormal(lightRay);
-					
+
 					lightContribution = lightContribution
 						+ light.getColor() * (light.getArea() * light.getIrradiance() / (double)n_samples)
-						* (rflct / 3.14) * ((lightRay.getDirection()*-1) * nrml)*(1/(lightRay.t * lightRay.t));
+						* (rflct / 3.14) * ((lightRay.getDirection() * -1) * nrml) * (1 / (lightRay.t * lightRay.t));
 				}
 			}
 		}
 	}
 
-	//Calculate color to return
-	ColorDBL result = hitSurface->getMaterial().getColor();
-	result = result * lightContribution;
-	if (next != nullptr) {
-		ColorDBL MCColor = next->castRay(objs, lights);
-		result = result + MCColor * hitSurface->getMaterial().getColor();
+	return lightContribution;
+}
+
+Ray* Ray::BounceSelf(std::vector<Object>& objs)
+{
+	for (int i = 0; i < objs.size(); i++)
+	{
+		objs[i].Intersection(*this);
 	}
-	
-	return result;
+
+	if (hitSurface != nullptr && hitSurface->getMaterial().getType() != Material::Type::lambertian)
+	{
+		next = hitSurface->getMaterial().BRDF(hitSurface->getNormal(*this), *this);
+		return next->BounceSelf(objs);
+	}
+
+	if (hitSurface != nullptr && hitSurface->getMaterial().getType() == Material::Type::lambertian)
+	{
+		return this;
+	}
+
+	//Ray hits outside the scene or something else
+	return nullptr;
 }

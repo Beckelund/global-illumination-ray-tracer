@@ -10,7 +10,7 @@ class Sphere : public Surface
 {
 public:
 
-	Sphere(Vec3 pos = Vec3(0.0, 0.0, 0.0), float rad = 1.0, Material mat = Material());
+	Sphere(Vec3 pos = Vec3(0.0, 0.0, 0.0), double rad = 1.0, Material mat = Material());
 	Sphere(const Sphere& copy);
 	
 	void Intersection(Ray& r);
@@ -18,8 +18,11 @@ public:
 	
 	ColorDBL getColor();	//For raycast atm
 
+	Vec3 getPosition() const { return position; };
+	double getRadius() const { return radius; };
+
 private:
 	Vec3 position;
-	float radius;
+	double radius;
 };
 

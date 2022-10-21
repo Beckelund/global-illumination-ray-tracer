@@ -4,6 +4,7 @@
 #include "object.h"
 #include "material.h"
 #include "arealight.h"
+#include "photonmap.h"
 
 #include <chrono>	//Estimated render time calculation
 
@@ -13,8 +14,8 @@ Object CreateRoom();
 int main()
 {
 	//Create image 
-	int ImageWidth = 1600;
-	int ImageHeight = 1600; 
+	int ImageWidth = 400;
+	int ImageHeight = 400; 
 	
 	Image im(ImageWidth, ImageHeight);
 
@@ -67,6 +68,19 @@ int main()
 	lightsList.push_back(light1);
 	//lightsList.push_back(light2);
 
+	//Get all transparent spheres into a list
+	std::vector<Surface*> transparentSpheres;
+	for (Object& object : objList)
+	{
+		for (Surface* surface : object.getTransparentSurfaces())
+		{
+			transparentSpheres.push_back(surface);
+		}
+	}
+
+	//Create Photon Map
+	PhotonMap photonmap(objList, lightsList, transparentSpheres, 1000);
+
 	//Create rays from camera
 	Vec3 eye = Vec3(-1.0, 0, 0);
 
@@ -103,14 +117,14 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 150;
+			int max_samples = 1;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
 				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
 				Vec3 direction = (pixelPos-eye).normalize();
 				Ray* r = new Ray(eye, direction);
 
-				result = result + r->castRay(objList, lightsList);
+				result = result + r->castRay(objList, lightsList, photonmap, false);
 				delete r;
 			}
 			result = result * (1.0 / (double) max_samples);
@@ -136,7 +150,7 @@ int main()
 
 	const char* str = fPath.c_str();
 	//im.ExportBPM(str);
-	im.ExportBPM("Images/2022-10-13_BIG_RENDER200.bmp");
+	im.ExportBPM("Images/2022-10-21_photons.bmp");
 
 
 	std::cout << "Success! " << std::endl;
