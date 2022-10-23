@@ -14,8 +14,8 @@ Object CreateRoom();
 int main()
 {
 	//Create image 
-	int ImageWidth = 600;
-	int ImageHeight = 600; 
+	int ImageWidth = 200;
+	int ImageHeight = 200; 
 	
 	Image im(ImageWidth, ImageHeight);
 
@@ -79,7 +79,7 @@ int main()
 	}
 
 	//Create Photon Map
-	PhotonMap photonmap(objList, lightsList, transparentSpheres, 1000);
+	PhotonMap photonmap(objList, lightsList, transparentSpheres, 10000);
 
 	//Create rays from camera
 	Vec3 eye = Vec3(-1.0, 0, 0);
@@ -117,7 +117,7 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 3;
+			int max_samples = 1;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
 				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
@@ -150,7 +150,7 @@ int main()
 
 	const char* str = fPath.c_str();
 	//im.ExportBPM(str);
-	im.ExportBPM("Images/2022-10-23_photons.bmp");
+	im.ExportBPM("Images/2022-10-23_kdtreetest.bmp");
 
 
 	std::cout << "Success! " << std::endl;
