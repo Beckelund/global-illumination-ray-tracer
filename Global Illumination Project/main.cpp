@@ -14,8 +14,8 @@ Object CreateRoom();
 int main()
 {
 	//Create image 
-	int ImageWidth = 400;
-	int ImageHeight = 400; 
+	int ImageWidth = 600;
+	int ImageHeight = 600; 
 	
 	Image im(ImageWidth, ImageHeight);
 
@@ -63,8 +63,8 @@ int main()
 
 	//Area Lights
 	std::vector<AreaLight> lightsList;
-	AreaLight light1(Vec3(1, -1, 4.5), Vec3(1, 0, 0), Vec3(0, 1, 0), ColorDBL(1.0, 1.0, 1.0), 80.0);
-	AreaLight light2(Vec3(1,5.5,0), Vec3(1, 0, 0), Vec3(0, 0, 1), ColorDBL(0.2, 1.0, 0.2), 200.0);
+	AreaLight light1(Vec3(1, -1, 4.5), Vec3(2, 0, 0), Vec3(0, 2, 0), ColorDBL(1.0, 1.0, 1.0), 80.0);
+	//AreaLight light2(Vec3(1,5.5,0), Vec3(1, 0, 0), Vec3(0, 0, 1), ColorDBL(0.2, 1.0, 0.2), 200.0);
 	lightsList.push_back(light1);
 	//lightsList.push_back(light2);
 
@@ -117,7 +117,7 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 1;
+			int max_samples = 3;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
 				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
@@ -150,7 +150,7 @@ int main()
 
 	const char* str = fPath.c_str();
 	//im.ExportBPM(str);
-	im.ExportBPM("Images/2022-10-21_photons.bmp");
+	im.ExportBPM("Images/2022-10-23_photons.bmp");
 
 
 	std::cout << "Success! " << std::endl;
@@ -225,22 +225,6 @@ Object CreateRoom()
 
 	return Room;
 }
-
-
-
-/*
-			r1.castRay(objList)
-			{
-				...
-					if (hitobj->material != lamb || r1.inportance < (rand(0, 1)))
-						Ray r2 = hitobj->material.BRDF(Vec3 n, r1); {
-					r1->next = r2;
-						}
-				r2.castRay()
-					color = hitobj->material.color;
-
-
-			}*/
 
 
 

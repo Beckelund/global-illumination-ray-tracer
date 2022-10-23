@@ -41,8 +41,8 @@ struct Vec3 {
     }   
 
     Vec3 normalize(){
-        double l = this->length();
-        return this->operator*(1 / l);
+        double l = this->length(); // l can be zero if the vector is 0,0,0
+        return this->operator*(1.0 / l);
     }
 
     Vec3 matrixMult(Vec3 col1, Vec3 col2, Vec3 col3) {

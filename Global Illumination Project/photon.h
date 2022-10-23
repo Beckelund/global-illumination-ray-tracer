@@ -9,6 +9,7 @@ public:
 	Photon(Vec3 pos, Vec3 dir, double flx);
 
 	Vec3 getPosition() const { return position; }
+	double getFlux() const { return flux; }
 	
 private:
 	Vec3 position;

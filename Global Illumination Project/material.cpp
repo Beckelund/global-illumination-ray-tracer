@@ -23,11 +23,11 @@ Ray* Material::BRDF(Vec3 Normal, Ray& prev) {
 	case Material::transparent:
 		R0 = pow((prev.speed - IOR) / (prev.speed + IOR), 2);
 		if (prev.getStartSurface() == prev.getHitSurface()) {
-			Normal = Normal * (-1);
+			Normal = Normal * (-1.0);
 			R0 = pow((IOR - prev.speed) / (prev.speed + IOR), 2);
 		}
-		cosAng = abs(Normal * (prev.getDirection() * (-1)));
-		R = R0 + (1 - R0) * pow((1 - cosAng), 5);
+		cosAng = abs(Normal * (prev.getDirection() * (-1.0)));
+		R = R0 + (1.0 - R0) * pow((1.0 - cosAng), 5);
 		if (((double)rand() / RAND_MAX) < R)
 			return Reflection(Normal, prev);
 		else

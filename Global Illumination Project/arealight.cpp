@@ -37,7 +37,7 @@ double AreaLight::CalculateFluxOnSurface(const Sphere* s) const
 	double PI = 3.14;
 	
 	Vec3 middle = position + v1 * (1.0 / 2.0) + v2 * (1.0 / 2.0);
-	Vec3 dist = s->getPosition() - middle;
+	Vec3 dist = middle - s->getPosition();
 	
 	double Gm = Vec3(0, 0, -1.0) * (dist.normalize() * -1.0) / dist.lengthSquared();
 	
@@ -80,10 +80,12 @@ std::vector<Photon> AreaLight::GeneratePhotons(std::vector<Object>& objects, Sph
 		Vec3 pointOnCircle = Vec3(r * cos(theta), r * sin(theta), 0.0);
 
 		//Transform to world system
-		Vec3 pointOnSphere = start + pointOnCircle.matrixMult(Xl, Yl, Zl);
+		Vec3 pointOnSphere = s->getPosition() + pointOnCircle.matrixMult(Xl, Yl, Zl);
 		
 		//Create Ray
-		Ray start_ray(start, pointOnSphere - start);
+		Vec3 ray_dir = (pointOnSphere - start);
+		ray_dir = ray_dir.normalize();
+		Ray start_ray(start,ray_dir);
 		
 		//Trace ray to end
 		Ray* end_ray = start_ray.BounceSelf(objects);
