@@ -72,9 +72,10 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights,
 	}
 
 	if (hitSurface == nullptr) return ColorDBL(0.0, 0.0, 0.0); 
-
+	//Photon Mapping support:
 	double max_radius = 0.1;
 	double totalFlux = 0;
+	/*
 	if (has_hit_lambertian == false && hitSurface->getMaterial().getType() == Material::Type::lambertian) {
 		has_hit_lambertian = true;
 		//std::cout << photonmap.photons.size() << std::endl;
@@ -86,6 +87,7 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights,
 		if(photons.size() > 1)
 			std::cout << "photons gotten: " << photons.size() << std::endl;
 	}		
+	*/
 	ColorDBL photonContribution = ColorDBL(1, 1, 1) * totalFlux;
 
 	//Direct light contribution
