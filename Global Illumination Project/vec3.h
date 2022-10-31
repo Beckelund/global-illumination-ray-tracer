@@ -26,11 +26,9 @@ struct Vec3 {
     Vec3 operator*(double const& a) const{
         return Vec3(x * a, y * a, z * a);
     }
-	/*
 	Vec3 operator/(double const& a) const {
 		return Vec3(x / a, y / a, z / a);
 	}
-    */
 	
     double lengthSquared(){
         return (x*x + y*y + z*z);

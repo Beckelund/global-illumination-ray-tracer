@@ -44,3 +44,7 @@ ColorDBL Sphere::getColor()
 {
 	return material.getColor();
 }
+
+void Sphere::Move(Vec3 pos) {
+	position = position + pos;
+}

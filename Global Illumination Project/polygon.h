@@ -26,6 +26,8 @@ public:
 
 	//Set
 
+	void Move(Vec3 pos);
+
 private:
 	Type type = Surface::Type::Polygon;
 	Vec3 normal;

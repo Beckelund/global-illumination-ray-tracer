@@ -68,9 +68,6 @@ Ray* Material::Refraction(Vec3 Normal, Ray& prev) {
 
 
 Ray* Material::lambertianReflector(Vec3 Normal, Ray& prev) {
-	//if (prev.maxBounce == 0) return nullptr;
-	// TODO Implement russian roulette  
-	
 	// Russian roulette 
 	double azimuth = ((double)rand() / RAND_MAX) * 2 * 3.14/reflectivity;
 	if (azimuth > 2 * 3.14) return nullptr; // ray termination 
