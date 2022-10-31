@@ -20,7 +20,7 @@ PhotonMap::PhotonMap(std::vector<Object>& objects, std::vector<AreaLight>& light
 		
 		for (Surface* sphere : spheres) {
 
-			std::cout << sphere->getType() << std::endl;
+			//std::cout << sphere->getType() << std::endl;
 			if (sphere->getType() == Surface::Type::Sphere)
 			{
 				Sphere* s = dynamic_cast<Sphere*>(sphere);

@@ -48,14 +48,14 @@ double AreaLight::CalculateFluxOnSurface(const Sphere* s) const
 
 std::vector<Photon> AreaLight::GeneratePhotons(std::vector<Object>& objects, Surface* s, int n_photons) const
 {
-	std::cout << "Dereferenced as a Surface" << std::endl;
+	//std::cout << "Dereferenced as a Surface" << std::endl;
 	std::vector<Photon> photons;
 	return photons;
 }
 
 std::vector<Photon> AreaLight::GeneratePhotons(std::vector<Object>& objects, Sphere* s, int n_photons) const
 {
-	std::cout << "Dereferenced as a Sphere" << std::endl;
+	//std::cout << "Dereferenced as a Sphere" << std::endl;
 	std::vector<Photon> photons;
 
 	double flux = CalculateFluxOnSurface(s) / (double) n_photons;

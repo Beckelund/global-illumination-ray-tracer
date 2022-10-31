@@ -117,7 +117,7 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 100;
+			int max_samples = 10;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
 				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
@@ -150,7 +150,7 @@ int main()
 
 	const char* str = fPath.c_str();
 	//im.ExportBPM(str);
-	im.ExportBPM("Images/BigDeerRender.bmp");
+	im.ExportBPM("Images/result.bmp");
 
 
 	std::cout << "Success! " << std::endl;
