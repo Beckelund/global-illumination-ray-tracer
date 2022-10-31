@@ -21,6 +21,8 @@ public:
 	Vec3 getPosition() const { return position; };
 	double getRadius() const { return radius; };
 
+	void Move(Vec3 pos);
+
 private:
 	Vec3 position;
 	double radius;

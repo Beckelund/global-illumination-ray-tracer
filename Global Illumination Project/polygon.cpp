@@ -58,3 +58,8 @@ ColorDBL Polygon::getColor()
 {
 	return material.getColor();
 }
+
+void Polygon::Move(Vec3 pos) {
+	for (auto& vert : vertices)
+		vert.pos = vert.pos + pos;
+}

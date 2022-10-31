@@ -12,10 +12,10 @@ Object::Object(const char* filePath){
 
 	std::vector<int> ind;
 	std::vector<Polygon::Vertex> vert; 
-	const unsigned int maxLength = 126;
+	const unsigned int maxLength = 255;
 	
-	
-
+	origin = Vec3(0, 0, 0);
+	Vec3 currentVertexPos;
 
 	for (char line[maxLength]; file.getline(&line[0], maxLength);) {
 		
@@ -36,13 +36,10 @@ Object::Object(const char* filePath){
 			ln.erase(0, stringStart);
 			std::string zString = ln;
 		
-			vert.push_back(Polygon::Vertex(
-				Vec3(std::stod(xString), std::stod(yString), std::stod(zString)),
-				ColorDBL(0.9, 0.9, 0.9)
-			));
+			currentVertexPos = Vec3(std::stod(xString), std::stod(yString), std::stod(zString));
+			origin = origin + currentVertexPos;// sum the position 
+			vert.push_back(Polygon::Vertex(currentVertexPos, ColorDBL(0.9, 0.9, 0.9)));
 		}
-
-		// TODO: there is a bug where not all the vertecies are loaded into the vector
 		if (line[0] == 'f') { // face
 			std::string ln = line;
 			ln.erase(0, 2); // remove the f;
@@ -72,11 +69,9 @@ Object::Object(const char* filePath){
 		}
 
 	}
-	
-	//Set origin and bounding TODO remove later
-	if (vert.size() == 0) origin = Vec3(0, 0, 0);
-	else origin = vert[0].pos;
 
+
+	origin = origin / ((double) ind.size());
 	for (int i = 1; i < vert.size(); i++)
 	{
 		if ((vert[i].pos - origin).length() > bounding)
@@ -119,6 +114,13 @@ void Object::SetMaterial(Material mat, int index)
 {
 	if (index < surfaces.size())
 		surfaces[index]->setMaterial(mat);
+}
+
+void Object::Move(Vec3 pos) {
+	for (auto& surface : surfaces) {
+		surface->Move(pos);
+	}
+	origin = origin + pos;
 }
 
 bool Object::boundingIntersect(Ray& r)

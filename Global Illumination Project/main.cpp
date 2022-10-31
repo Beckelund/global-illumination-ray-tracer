@@ -14,8 +14,8 @@ Object CreateRoom();
 int main()
 {
 	//Create image 
-	int ImageWidth = 200;
-	int ImageHeight = 200; 
+	int ImageWidth = 800;
+	int ImageHeight = 800; 
 	
 	Image im(ImageWidth, ImageHeight);
 
@@ -41,24 +41,25 @@ int main()
 	//objList.push_back(Plane1);
 
 	//Create Sphere
-	Material Sphere1Material(Material::mirror,ColorDBL(1.0, 1.0, 1.0));
+	Material MirrorMaterial(Material::mirror,ColorDBL(1.0, 1.0, 1.0));
 	Material TransparenMaterial(Material::transparent, ColorDBL(1.0, 1.0, 1.0));
 	TransparenMaterial.setIOR(1.5);
 
-	Sphere Sphere1(Vec3(7.0, -2, -2), 1.75, Sphere1Material);
-	Sphere Sphere2(Vec3(7.0, 2, -1), 2.25, TransparenMaterial);
+	Sphere Sphere1(Vec3(6.2, 1.95, -2.95), 1.8, TransparenMaterial);
+	Sphere Sphere2(Vec3(7.3, -2.2, -3.5), 1, MirrorMaterial);
 	Object MiddleSphere;
 	MiddleSphere.AddSphere(Sphere1);
 	MiddleSphere.AddSphere(Sphere2);
 	objList.push_back(MiddleSphere);
 
 	//Create material
-	Material m(Material::Type::mirror,ColorDBL(1.0,1.0,1.0));
+	Material deermat(Material::Type::lambertian,ColorDBL(0.8,0.8,0.8));
 
 	// Create object from file 
-	Object objectFromFile("Models/monkey.obj");
-	objectFromFile.SetMaterial(m);
-	//objList.push_back(objectFromFile);
+	Object objectFromFile("Models/deer2.obj");
+	objectFromFile.SetMaterial(deermat);
+	objectFromFile.Move(Vec3(8.65, 0.12, -2.0));
+	objList.push_back(objectFromFile);
 
 
 	//Area Lights
@@ -72,8 +73,7 @@ int main()
 	std::vector<Surface*> transparentSpheres;
 	for (Object& object : objList)
 	{
-		for (Surface* surface : object.getTransparentSurfaces())
-		{
+		for (Surface* surface : object.getTransparentSurfaces()) {
 			transparentSpheres.push_back(surface);
 		}
 	}
@@ -117,7 +117,7 @@ int main()
 			double z = j * deltaHeight + c1.z + deltaHeight / 2;
 
 			ColorDBL result = ColorDBL(0.0, 0.0, 0.0);
-			int max_samples = 1;
+			int max_samples = 100;
 			for (int sample = 0; sample < max_samples; sample++)
 			{
 				Vec3 pixelPos = Vec3(c1.x, y + ((double)rand()/RAND_MAX)*deltaWidth, z + ((double)rand() / RAND_MAX) * deltaHeight);
@@ -150,7 +150,7 @@ int main()
 
 	const char* str = fPath.c_str();
 	//im.ExportBPM(str);
-	im.ExportBPM("Images/2022-10-23_kdtreetest.bmp");
+	im.ExportBPM("Images/BigDeerRender.bmp");
 
 
 	std::cout << "Success! " << std::endl;

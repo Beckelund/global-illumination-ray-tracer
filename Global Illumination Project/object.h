@@ -23,6 +23,7 @@ public:
 	void SetMaterial(Material mat);
 	void SetMaterial(Material mat, int index);	//For setting a specific surface
 
+	void Move(Vec3 pos);
 
 	//Intersection
 	void Intersection(Ray& r);
