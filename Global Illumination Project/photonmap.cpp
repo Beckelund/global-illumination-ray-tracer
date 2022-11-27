@@ -2,12 +2,11 @@
 #include <iostream>
 
 
-PhotonMap::PhotonMap()
-{
-}
+PhotonMap::PhotonMap():root(nullptr){}
 
 PhotonMap::PhotonMap(std::vector<Object>& objects, std::vector<AreaLight>& lights, std::vector<Surface*>& spheres, int max_photons)
 {
+	root = nullptr;
 	if (lights.size() == 0 || spheres.size() == 0) return;
 	
 	std::vector<Photon> photons;
@@ -30,118 +29,88 @@ PhotonMap::PhotonMap(std::vector<Object>& objects, std::vector<AreaLight>& light
 				photons.insert(photons.end(), photons_from_light.begin(), photons_from_light.end());
 			}
 		}
-	}
-	
+	}	
 	//Build KDtree
-	tree.BuildTree(photons);
+	root = generateKDTree(photons,0);
 }
 
-std::vector<Photon> PhotonMap::getPhotons(Vec3 position, double length)
-{
-	std::vector<Photon> result = tree.getPhotons(position, length);
-	return result;
-}
-
-KDTree::KDTree()
-{
-	root = nullptr;
-}
-
-KDTree::KDTree(std::vector<Photon>& photons) : KDTree()
-{
-	BuildTree(photons);
-}
-
-KDTree::~KDTree()
-{
+PhotonMap::~PhotonMap() {
 	delete root;
 }
 
-/*
-bool CompareX(const Photon& lhs, const Photon& rhs)
-{
-	return lhs.getPosition().x < rhs.getPosition().x;
-}
 
-bool CompareY(const Photon& lhs, const Photon  rhs)
-{
-	return lhs.getPosition().y < rhs.getPosition().y;
-}
-
-bool CompareZ(const Photon& lhs, const Photon  rhs)
-{
-	return lhs.getPosition().z < rhs.getPosition().z;
-}
-*/
-
-void KDTree::BuildTree(std::vector<Photon>& photons)
-{
-	if (photons.size() == 0) return;
-
-	//Choose comparison function
-	
-
-	//Find median
-	int median_index = (int)photons.size() / 2;
-	std::nth_element(photons.begin(), photons.begin() + median_index, photons.end(), [](const Photon& a, const Photon& b) { return a.getPosition().x < b.getPosition().x; });
-	Photon median = photons[median_index];
-
-	//Split into left and right
-	std::vector<Photon> left;
-	std::vector<Photon> right;
-	for (int i = 0; i < photons.size(); i++) {
-		if (i == median_index) continue;
-		if (photons[i].getPosition().x < median.getPosition().x) {
-			left.push_back(photons[i]);
-		}
-		else {
-			right.push_back(photons[i]);
-		}
-	}
-
-	//Create node
-	root = new Node(median);
-	root->left = new KDTree(left);
-	root->right = new KDTree(right);
-}
-
-std::vector<Photon>& KDTree::getPhotons(Vec3& position, double& length)
+std::vector<Photon> PhotonMap::getPhotons(Vec3 position, double length)
 {
 	std::vector<Photon> result;
-	if (root == nullptr) return result;
-
-	if (root->photon.getPosition().x > position.x - length && root->photon.getPosition().x < position.x + length) {
-		result.push_back(root->photon);
-	}
-	
-	if (root->left != nullptr && root->photon.getPosition().x > position.x - length) {
-		std::vector<Photon> left_photons = root->left->getPhotons(position, length);
-		result.insert(result.end(), left_photons.begin(), left_photons.end());
-	}
-	
-	if (root->right != nullptr && root->photon.getPosition().x < position.x + length) {
-		std::vector<Photon> right = root->right->getPhotons(position, length);
-		result.insert(result.end(), right.begin(), right.end());
-	}
-	
+	root->getPhotons(result, position, length);
 	return result;
 }
 
-/*
-KDTree::Node::Node(Photon p) : photon(p)
+
+
+PhotonMap::Node* PhotonMap::generateKDTree(std::vector<Photon>& photons,int depth)
 {
+	//Base case
+	if (photons.size() == 0) 
+		return nullptr;
+	else if (photons.size() == 1) 
+		return new Node(photons[0], depth);
+
+	//Find median
+	auto median_itr = photons.begin() + photons.size() / 2;
+	if (depth % 3 == 0) { // Split in x 
+		std::nth_element(photons.begin(), median_itr, photons.end(), [](const Photon& a, const Photon& b) { return a.getPosition().x < b.getPosition().x; });
+	}
+	else if (depth % 3 == 1) { // Split in y 
+		std::nth_element(photons.begin(), median_itr, photons.end(), [](const Photon& a, const Photon& b) { return a.getPosition().y < b.getPosition().y; });
+	}
+	else if (depth % 3 == 2) { // Split in z 
+		std::nth_element(photons.begin(), median_itr, photons.end(), [](const Photon& a, const Photon& b) { return a.getPosition().z < b.getPosition().z; });
+	}
+	Photon median_photon = *median_itr;
+
+	//Split into left and right
+	std::vector<Photon> left(photons.begin(),median_itr);
+	std::vector<Photon> right(median_itr+1, photons.end());
+
+	//Create node
+	Node* leftNode = generateKDTree(left,depth + 1);
+	Node* rightNode = generateKDTree(right,depth + 1);
+	return new Node(median_photon, depth,leftNode,rightNode);
+
+}
+
+void PhotonMap::Node::getPhotons(std::vector<Photon>& photons, const Vec3& pos, const double& lngt) const {
+	if (this == nullptr) return;
+
+	// Call the function for the children nodes if they are in the range and exists 
+	int dimention = depth % 3;// 0 = x, 1 = y, 2 = z;
+	if (pos[dimention] + lngt < photon.getPosition()[dimention])
+		left->getPhotons(photons, pos, lngt);
+	else if (pos[dimention] - lngt > photon.getPosition()[dimention])
+		right->getPhotons(photons, pos, lngt);
+	else {
+		left->getPhotons(photons, pos, lngt);
+		right->getPhotons(photons, pos, lngt);
+
+		// check if the current node in range
+		if (std::abs(photon.getPosition()[(dimention + 1) % 3] - pos[(dimention + 1) % 3]) < lngt &&
+			std::abs(photon.getPosition()[(dimention + 2) % 3] - pos[(dimention + 2) % 3]) < lngt) {
+			photons.push_back(photon);
+		}
+	}
+}
+
+
+PhotonMap::Node::Node(Photon& p,int d) : photon(p), depth(d) {
 	left = nullptr;
 	right = nullptr;
 }
-*/
 
-KDTree::Node::Node(Photon& p, KDTree::Axis a) : photon(p), median_axis(a)
-{
-	left = nullptr;
-	right = nullptr;
-}
+PhotonMap::Node::Node(Photon& p, int d, Node* l, Node* r) 
+	:photon(p),depth(d),left(l),right(r){}
 
-KDTree::Node::~Node()
+PhotonMap::Node::~Node()
 {
 	delete left;
 	delete right;

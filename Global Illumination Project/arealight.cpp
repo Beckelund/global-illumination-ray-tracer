@@ -8,12 +8,13 @@ AreaLight::AreaLight(Vec3 pos, Vec3 inV1, Vec3 inV2, ColorDBL col, double flux)
 	v1 = inV1;
 	v2 = inV2;
 	color = col;
+	this->flux = flux;
 
 	//calculate normal
 	normal = (v1 % v2).normalize();
 
-	//Calculate irradiance
-	irradiance = flux / (v1 % v2).length();
+	//Calculate radiosity
+	radiosity = flux / (v1 % v2).length();
 
 	area = (v1 % v2).length();
 }
@@ -43,7 +44,7 @@ double AreaLight::CalculateFluxOnSurface(const Sphere* s) const
 	
 	double area = Gm * PI * s->getRadius() * s->getRadius();
 	
-	return area * irradiance;
+	return flux * area;
 }
 
 std::vector<Photon> AreaLight::GeneratePhotons(std::vector<Object>& objects, Surface* s, int n_photons) const

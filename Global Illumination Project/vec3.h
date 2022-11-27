@@ -30,6 +30,13 @@ struct Vec3 {
 		return Vec3(x / a, y / a, z / a);
 	}
 	
+    double operator[](int const i) const {
+        if (i == 0) return x;
+        else if (i == 1) return y;
+        else if (i == 2) return z;
+        else return 0;
+    }
+
     double lengthSquared(){
         return (x*x + y*y + z*z);
     }

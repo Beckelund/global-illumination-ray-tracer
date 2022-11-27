@@ -17,7 +17,8 @@ public:
 
 	//Getters
 	ColorDBL getColor() const { return color; }
-	double getIrradiance() const { return irradiance; }
+	double getRadiosity() const { return radiosity; }
+	double getRadiance() const { return radiosity / 3.1415; } // energy leving per solid angle
 	double getArea() const { return area; }
 	
 	//Photon map support
@@ -29,8 +30,9 @@ public:
 
 private:
 	ColorDBL color;
-	double irradiance;
 	double area;
+	double radiosity; // energy leving per unit area
+	double flux; // total energy emitted 
 	
 	Vec3 normal;
 

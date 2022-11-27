@@ -59,7 +59,7 @@ int main()
 	Object objectFromFile("Models/deer2.obj");
 	objectFromFile.SetMaterial(deermat);
 	objectFromFile.Move(Vec3(8.65, 0.12, -2.0));
-	objList.push_back(objectFromFile);
+	//objList.push_back(objectFromFile);
 
 
 	//Area Lights
@@ -79,7 +79,7 @@ int main()
 	}
 
 	//Create Photon Map
-	PhotonMap photonmap(objList, lightsList, transparentSpheres, 10000);
+	PhotonMap photonmap(objList, lightsList, transparentSpheres, 1000000);
 
 	//Create rays from camera
 	Vec3 eye = Vec3(-1.0, 0, 0);
@@ -150,7 +150,7 @@ int main()
 
 	const char* str = fPath.c_str();
 	//im.ExportBPM(str);
-	im.ExportBPM("Images/result.bmp");
+	im.ExportBPM("Images/KDTree_test4.bmp");
 
 
 	std::cout << "Success! " << std::endl;

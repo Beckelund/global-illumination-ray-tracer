@@ -4,7 +4,6 @@ Object::Object(){}
 
  
 Object::Object(const char* filePath){
-//TODO implemetn creating object from a .obj file 
 	std::ifstream file;
 	file.open(filePath,std::ifstream::in);
 	if (!file.is_open())

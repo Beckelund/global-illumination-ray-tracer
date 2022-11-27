@@ -75,20 +75,24 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights,
 	//Photon Mapping support:
 	double max_radius = 0.1;
 	double totalFlux = 0;
-	/*
+	
 	if (has_hit_lambertian == false && hitSurface->getMaterial().getType() == Material::Type::lambertian) {
 		has_hit_lambertian = true;
 		//std::cout << photonmap.photons.size() << std::endl;
 		std::vector<Photon> photons = photonmap.getPhotons(getEnd(), max_radius);
 		
 		for (Photon& p : photons) {
-			totalFlux += p.getFlux();//*(1/distance)
+			double distance = (p.getPosition() - getEnd()).length();
+			totalFlux += p.getFlux() * (1 / distance);
 		}
-		if(photons.size() > 1)
-			std::cout << "photons gotten: " << photons.size() << std::endl;
+		/*if(photons.size() > 1)
+			std::cout << "photons gotten: " << photons.size() << std::endl;*/
 	}		
-	*/
-	ColorDBL photonContribution = ColorDBL(1, 1, 1) * totalFlux;
+
+	ColorDBL photonContribution = ColorDBL(1, 1, 1) * totalFlux *20; // TODO the 20 should not be here, 
+
+	//View just the photonMap 
+	//return photonContribution;
 
 	//Direct light contribution
 	ColorDBL lightContribution = DirectLightContribution(objs, lights);
@@ -128,7 +132,7 @@ ColorDBL Ray::DirectLightContribution(std::vector<Object>& objs, std::vector<Are
 					Vec3 nrml = hitSurface->getNormal(lightRay);
 
 					lightContribution = lightContribution
-						+ light.getColor() * (light.getArea() * light.getIrradiance() / (double)n_samples)
+						+ light.getColor() * (light.getArea() * light.getRadiosity() / (double)n_samples)
 						* (rflct / 3.14) * ((lightRay.getDirection() * -1) * nrml) * (1 / (lightRay.t * lightRay.t));
 				}
 			}
