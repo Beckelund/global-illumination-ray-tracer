@@ -10,6 +10,7 @@ public:
 	Photon(const Photon& other);
 	
 	Vec3 getPosition() const { return position; }
+	Vec3 getDirection() const { return direction; }
 	double getFlux() const { return flux; }
 	
 private:

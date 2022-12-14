@@ -73,23 +73,25 @@ ColorDBL Ray::castRay(std::vector<Object>& objs, std::vector<AreaLight>& lights,
 
 	if (hitSurface == nullptr) return ColorDBL(0.0, 0.0, 0.0); 
 	//Photon Mapping support:
-	double max_radius = 0.1;
+	double max_radius = 0.15;
 	double totalFlux = 0;
 	
 	if (has_hit_lambertian == false && hitSurface->getMaterial().getType() == Material::Type::lambertian) {
 		has_hit_lambertian = true;
 		//std::cout << photonmap.photons.size() << std::endl;
 		std::vector<Photon> photons = photonmap.getPhotons(getEnd(), max_radius);
-		
+		double rflct = hitSurface->getMaterial().getReflectivity();
+		Vec3 nrlm = hitSurface->getNormal(*this);
+
 		for (Photon& p : photons) {
-			double distance = (p.getPosition() - getEnd()).length();
-			totalFlux += p.getFlux() * (1 / distance);
+			totalFlux += rflct * ((p.getDirection() * (-1)) * nrlm) * p.getFlux();
 		}
+		totalFlux *= (1 / (max_radius * max_radius * 3.14));
 		/*if(photons.size() > 1)
 			std::cout << "photons gotten: " << photons.size() << std::endl;*/
 	}		
 
-	ColorDBL photonContribution = ColorDBL(1, 1, 1) * totalFlux *20; // TODO the 20 should not be here, 
+	ColorDBL photonContribution = ColorDBL(1, 1, 1) * totalFlux;
 
 	//View just the photonMap 
 	//return photonContribution;
